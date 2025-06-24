@@ -3,6 +3,12 @@ const { kv } = require('@vercel/kv');
 const CONFIG_KEY = 'lekhikaAppConfig';
 
 module.exports = async function handler(request, response) {
+  // Check for KV environment variables to ensure it's connected.
+  if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
+    console.error("Vercel KV environment variables not found.");
+    return response.status(500).json({ error: 'Server configuration error: KV database not connected. Please connect a KV store in your Vercel project settings.' });
+  }
+  
   // --- Handle POST request (from admin panel to save config) ---
   if (request.method === 'POST') {
     const adminSecret = process.env.ADMIN_SECRET_KEY;
@@ -17,8 +23,8 @@ module.exports = async function handler(request, response) {
       await kv.set(CONFIG_KEY, configData);
       return response.status(200).json({ message: 'Configuration saved successfully.' });
     } catch (error) {
-      console.error('Error saving configuration:', error);
-      return response.status(500).json({ error: 'Failed to save configuration.' });
+      console.error('Error SAVING configuration to KV:', error);
+      return response.status(500).json({ error: 'Failed to save configuration to database.' });
     }
   }
 
@@ -28,7 +34,7 @@ module.exports = async function handler(request, response) {
       const fullConfig = await kv.get(CONFIG_KEY);
       
       if (!fullConfig) {
-        return response.status(404).json({ error: 'Configuration not found. Please save settings in the admin panel.' });
+        return response.status(404).json({ error: 'Configuration not found. Please save settings in the admin panel first.' });
       }
 
       const sanitizedConfig = {
@@ -39,8 +45,9 @@ module.exports = async function handler(request, response) {
 
       return response.status(200).json(sanitizedConfig);
     } catch (error) {
-      console.error('Error fetching configuration:', error);
-      return response.status(500).json({ error: 'Failed to fetch configuration.' });
+      console.error('Error FETCHING configuration from KV:', error);
+      // Send a more specific error message back to the frontend
+      return response.status(500).json({ error: `Failed to fetch configuration from database. Server log: ${error.message}` });
     }
   }
 
