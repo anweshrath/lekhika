@@ -1,58 +1,326 @@
-<!DOCTYPE html><html lang="en"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>CopyAlchemist's Assistant - LekhIkA (AI-Powered)</title>    <script src="https://cdn.tailwindcss.com"></script>    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">    <style>        #copy-alchemist-lekhika {    position: relative;    z-index: 1;    /* Base background color for the card */    background-color: rgba(15, 23, 42, 0.92); /* Slightly more opaque base */    /* Subtle geometric pattern for the card background */    background-image:        linear-gradient(135deg, rgba(0, 255, 255, 0.02) 25%, transparent 25%),         linear-gradient(225deg, rgba(0, 255, 255, 0.02) 25%, transparent 25%),        linear-gradient(45deg, rgba(0, 255, 255, 0.02) 25%, transparent 25%),        linear-gradient(315deg, rgba(0, 255, 255, 0.02) 25%, rgba(15, 23, 42, 0.92) 25%); /* Last one uses base color for solid fill */    background-size: 20px 20px; /* Size of the pattern repeating unit */    background-position: 0 0, 0 0, 10px 10px, 10px 10px; /* Offsets for a checkered/complex line effect */
-    backdrop-filter: blur(10px);    border: 1px solid rgba(0, 255, 255, 0.15);    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 255, 255, 0.05);}        :root {            --glow-color-1: #a78bfa;            --glow-color-2: #c084fc;            --premium-accent: #00ffff;            --premium-accent-dark: #00a3a3;            --cta-glow-color: #00ffff; /* Cyan for CTA */        }
-        body {            font-family: 'Inter', sans-serif;            scroll-behavior: smooth;            background-color: #0a0f1f;            background-image: linear-gradient(to br, #0a0f1f, #0f172a, #1e1b4b);            padding-top: 80px;            position: relative;            overflow-x: hidden;        }
-        body::before {            content: "";            position: fixed;            top: 0;            left: 0;            width: 100vw;            height: 100vh;            background-image: url('https://copyalche.my/premium/lekhika-ai-logo-close.png');            background-repeat: no-repeat;            background-size: auto 50vh;            background-position: -10vh center;            opacity: 0.25;            z-index: -1;            pointer-events: none;            transition: background-position 0.3s ease-out, background-size 0.3s ease-out;        }
-        header.sticky-header {            background-color: rgba(10, 15, 31, 0.9);            backdrop-filter: blur(12px);            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.05), 0 1px 3px rgba(0,0,0,0.1);            transition: background-color 0.3s ease, box-shadow 0.3s ease;            height: 80px;            z-index: 50;        }        header.sticky-header .nav-link {            position: relative;            transition: color 0.3s ease;            color: #cbd5e1;        }        header.sticky-header .nav-link:hover {            color: var(--premium-accent);        }        header.sticky-header .nav-link::after {            content: '';            position: absolute;            width: 0;            height: 2px;            bottom: -4px;            left: 50%;            transform: translateX(-50%);            background-color: var(--premium-accent);            transition: width 0.3s ease;        }        header.sticky-header .nav-link:hover::after {            width: 100%;        }        #mobileMenu a:hover {            color: var(--premium-accent);            background-color: rgba(0, 255, 255, 0.05);        }
-        /* Main section container styling */        #copy-alchemist-lekhika {            position: relative;            z-index: 1;            /* Base background color for the card */            background-color: rgba(15, 23, 42, 0.92);            /* New: Add your subtle background image for the card here */            /* Example: background-image: linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)), url('YOUR_CARD_BACKGROUND_IMAGE_URL_HERE'); */            /* background-blend-mode: multiply; /* Or 'overlay', 'soft-light' - experiment! */            /* background-size: cover; */            /* background-position: center; */            backdrop-filter: blur(10px);            border: 1px solid rgba(0, 255, 255, 0.15);            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 255, 255, 0.05);        }        /* If using a pseudo-element for card background for more control over opacity: */        /* #copy-alchemist-lekhika::after {            content: "";            position: absolute;            top: 0; left: 0; right: 0; bottom: 0;            background-image: url('YOUR_SUBTLE_CARD_BACKGROUND_IMAGE_URL');            background-size: cover;            background-position: center;            opacity: 0.05; /* Very subtle            z-index: -1; /* Behind card content but above card's direct background-color            pointer-events: none;        } */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CopyAlchemist's Assistant - LekhIkA (AI-Powered)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base styling for the main content card */
+        #copy-alchemist-lekhika {
+            position: relative;
+            z-index: 1;
+            /* Base background color for the card */
+            background-color: rgba(15, 23, 42, 0.92); /* Slightly more opaque base */
+            /* Subtle geometric pattern for the card background */
+            background-image:
+                linear-gradient(135deg, rgba(0, 255, 255, 0.02) 25%, transparent 25%),
+                linear-gradient(225deg, rgba(0, 255, 255, 0.02) 25%, transparent 25%),
+                linear-gradient(45deg, rgba(0, 255, 255, 0.02) 25%, transparent 25%),
+                linear-gradient(315deg, rgba(0, 255, 255, 0.02) 25%, rgba(15, 23, 42, 0.92) 25%); /* Last one uses base color for solid fill */
+            background-size: 20px 20px; /* Size of the pattern repeating unit */
+            background-position: 0 0, 0 0, 10px 10px, 10px 10px; /* Offsets for a checkered/complex line effect */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 255, 255, 0.05);
+        }
 
-        .score-circle-bg { stroke: #2c3a50; }        .score-circle-fg {            stroke: var(--premium-accent);            stroke-dasharray: 251.2;            stroke-dashoffset: 251.2;            transition: stroke-dashoffset 1.2s cubic-bezier(0.65, 0, 0.35, 1);            filter: drop-shadow(0 0 3px var(--premium-accent)) drop-shadow(0 0 6px var(--premium-accent));        }        #scoreCircleFg.glowing-circle {             filter: drop-shadow(0 0 5px var(--premium-accent)) drop-shadow(0 0 10px var(--premium-accent));             animation: pulseSvgGlowPremium 2s infinite alternate;        }        @keyframes pulseSvgGlowPremium {            from { filter: drop-shadow(0 0 3px var(--premium-accent-dark)) drop-shadow(0 0 6px var(--premium-accent-dark)); }            to   { filter: drop-shadow(0 0 6px var(--premium-accent)) drop-shadow(0 0 12px var(--premium-accent)); }        }
-        .parameter-bar-bg { background-color: #334155; }        .parameter-bar-fg {            transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1), background-color 0.5s ease;            width: 0%;            filter: brightness(1.1);        }        .suggestion-item {            opacity: 0;            transform: perspective(500px) translateZ(-50px) translateY(20px);            animation: popInAdvanced 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;        }        @keyframes popInAdvanced {            to { opacity: 1; transform: perspective(500px) translateZ(0) translateY(0); }        }        .suggestions-container::-webkit-scrollbar { width: 8px; }        .suggestions-container::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }        .suggestions-container::-webkit-scrollbar-thumb { background: var(--premium-accent-dark); border-radius: 10px; transition: background-color 0.3s ease; }        .suggestions-container::-webkit-scrollbar-thumb:hover { background: var(--premium-accent); }
-        .lekhika-avatar {            transition: transform 0.4s ease-in-out, box-shadow 0.3s ease;            animation: subtleFloatPremium 4s infinite ease-in-out;            border-width: 3px;            border-color: rgba(0, 255, 255, 0.3);            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2), 0 0 30px rgba(0, 255, 255, 0.1);        }        .lekhika-avatar:hover {            transform: scale(1.1) translateY(-3px);            box-shadow: 0 15px 30px -10px rgba(0, 255, 255, 0.4);            border-color: rgba(0, 255, 255, 0.7);        }        @keyframes subtleFloatPremium {            0%, 100% { transform: translateY(0) scale(1); }            50% { transform: translateY(-5px) scale(1.03); }        }
-        #scoreFeedback.animate-pulse-feedback { animation: pulseFeedbackPremium 2s infinite ease-in-out; }        @keyframes pulseFeedbackPremium { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.02); } }
-        .persona-card-magical {            position: relative;            border-width: 1px;            border-color: transparent;            animation: pulseCardBorderGlowPremium 3s infinite alternate ease-in-out;            background: linear-gradient(145deg, rgba(25, 36, 58, 0.7), rgba(40, 51, 70, 0.6));            backdrop-filter: blur(5px);        }        @keyframes pulseCardBorderGlowPremium {            from { box-shadow: 0 0 20px rgba(0, 255, 255, 0.15), 0 0 40px rgba(0, 255, 255, 0.1); border-color: rgba(0, 255, 255, 0.2); }            to   { box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), 0 0 60px rgba(0, 255, 255, 0.2); border-color: rgba(0, 255, 255, 0.5); }        }        #scoreText.glowing-score-text {            animation: pulseScoreTextMagicPremium 1.5s infinite alternate;            color: var(--premium-accent);        }        @keyframes pulseScoreTextMagicPremium {            from { text-shadow: 0 0 6px var(--premium-accent-dark), 0 0 10px var(--premium-accent), 0 0 15px #fff; }            to   { text-shadow: 0 0 8px var(--premium-accent), 0 0 15px #fff, 0 0 25px var(--premium-accent-dark); }        }        .parameter-card {            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out;            background-color: rgba(45, 55, 72, 0.7);            border-color: rgba(71, 85, 105, 0.5);        }        .parameter-card:hover {            transform: translateY(-5px) scale(1.04);            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.15);            border-color: var(--premium-accent);            background-color: rgba(55, 65, 82, 0.8);        }        .suggestion-item:hover { transform: translateY(-4px) scale(1.03) perspective(500px) translateZ(10px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }        .suggestion-item.improvement-type { background-color: rgba(202, 138, 4, 0.15); border-color: rgba(202, 138, 4, 0.4); }        .suggestion-item.tip-type { background-color: rgba(14, 165, 233, 0.15); border-color: rgba(14, 165, 233, 0.4); }        .suggestion-item.info-type { background-color: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.4); }        .suggestion-item.improvement-type:hover { background-color: rgba(202, 138, 4, 0.3); box-shadow: 0 0 15px rgba(202, 138, 4, 0.3); }        .suggestion-item.tip-type:hover { background-color: rgba(14, 165, 233, 0.3); box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);}        .suggestion-item.info-type:hover { background-color: rgba(34, 197, 94, 0.3); box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);}
-        #copyInput {            background-color: rgba(30, 41, 59, 0.8);            border-color: rgba(51, 65, 85, 0.7);            color: #e2e8f0;            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;        }        #copyInput:focus {            background-color: rgba(30, 41, 59, 1);            border-color: var(--premium-accent);            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);            color: #f8fafc;        }        .futuristic-title span { background-image: linear-gradient(to right, var(--premium-accent), #c084fc, #f472b6); }
-        .cta-button, .ai-button {            display: inline-block;            padding: 0.75rem 2rem;            font-size: 0.875rem;            font-weight: 600;            color: #0a0f1f;            background-image: linear-gradient(to right, var(--premium-accent) 0%, #818cf8 50%, var(--premium-accent) 100%);            background-size: 200% auto;            border: none;            border-radius: 0.5rem;            box-shadow: 0 4px 15px 0 rgba(0, 255, 255, 0.35);            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);            text-transform: uppercase;            letter-spacing: 0.05em;            cursor: pointer;            position: relative;            overflow: hidden;            z-index: 1;        }        .cta-button:hover, .ai-button:hover {            background-position: right center;            box-shadow: 0 6px 20px 0 rgba(129, 140, 248, 0.4);            transform: translateY(-2px);        }
+        /* Root CSS Variables for thematic colors and dynamic background */
+        :root {
+            --glow-color-1: #a78bfa;
+            --glow-color-2: #c084fc;
+            --premium-accent: #00ffff;
+            --premium-accent-dark: #00a3a3;
+            --cta-glow-color: #00ffff; /* Cyan for CTA */
+            --lekhika-bg-logo-url: url('https://copyalche.my/premium/lekhika-ai-logo-close.png'); /* Default background logo, can be updated via JS */
+        }
+
+        /* Main body styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            background-color: #0a0f1f;
+            background-image: linear-gradient(to br, #0a0f1f, #0f172a, #1e1b4b);
+            padding-top: 80px; /* Space for sticky header */
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Dynamic background image using pseudo-element and CSS variable */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: var(--lekhika-bg-logo-url); /* Now uses CSS variable */
+            background-repeat: no-repeat;
+            background-size: auto 50vh;
+            background-position: -10vh center;
+            opacity: 0.25;
+            z-index: -1;
+            pointer-events: none;
+            transition: background-position 0.3s ease-out, background-size 0.3s ease-out;
+        }
+
+        /* Sticky header styling */
+        header.sticky-header {
+            background-color: rgba(10, 15, 31, 0.9);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.05), 0 1px 3px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            height: 80px;
+            z-index: 50;
+        }
+        header.sticky-header .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            color: #cbd5e1;
+        }
+        header.sticky-header .nav-link:hover {
+            color: var(--premium-accent);
+        }
+        header.sticky-header .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--premium-accent);
+            transition: width 0.3s ease;
+        }
+        header.sticky-header .nav-link:hover::after {
+            width: 100%;
+        }
+        #mobileMenu a:hover {
+            color: var(--premium-accent);
+            background-color: rgba(0, 255, 255, 0.05);
+        }
+
+        /* Main section container styling (duplicate of above, kept for consistency) */
+        #copy-alchemist-lekhika {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 255, 255, 0.05);
+        }
+
+        /* Score circle and related effects */
+        .score-circle-bg { stroke: #2c3a50; }
+        .score-circle-fg {
+            stroke: var(--premium-accent);
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 251.2;
+            transition: stroke-dashoffset 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+            filter: drop-shadow(0 0 3px var(--premium-accent)) drop-shadow(0 0 6px var(--premium-accent));
+        }
+        #scoreCircleFg.glowing-circle {
+            filter: drop-shadow(0 0 5px var(--premium-accent)) drop-shadow(0 0 10px var(--premium-accent));
+            animation: pulseSvgGlowPremium 2s infinite alternate;
+        }
+        @keyframes pulseSvgGlowPremium {
+            from { filter: drop-shadow(0 0 3px var(--premium-accent-dark)) drop-shadow(0 0 6px var(--premium-accent-dark)); }
+            to   { filter: drop-shadow(0 0 6px var(--premium-accent)) drop-shadow(0 0 12px var(--premium-accent)); }
+        }
+
+        /* Parameter bars */
+        .parameter-bar-bg { background-color: #334155; }
+        .parameter-bar-fg {
+            transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1), background-color 0.5s ease;
+            width: 0%;
+            filter: brightness(1.1);
+        }
+
+        /* Suggestion items animations */
+        .suggestion-item {
+            opacity: 0;
+            transform: perspective(500px) translateZ(-50px) translateY(20px);
+            animation: popInAdvanced 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
+        }
+        @keyframes popInAdvanced {
+            to { opacity: 1; transform: perspective(500px) translateZ(0) translateY(0); }
+        }
+        /* Scrollbar styling for suggestions container */
+        .suggestions-container::-webkit-scrollbar { width: 8px; }
+        .suggestions-container::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
+        .suggestions-container::-webkit-scrollbar-thumb { background: var(--premium-accent-dark); border-radius: 10px; transition: background-color 0.3s ease; }
+        .suggestions-container::-webkit-scrollbar-thumb:hover { background: var(--premium-accent); }
+
+        /* LekhIkA avatar animation */
+        .lekhika-avatar {
+            transition: transform 0.4s ease-in-out, box-shadow 0.3s ease;
+            animation: subtleFloatPremium 4s infinite ease-in-out;
+            border-width: 3px;
+            border-color: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2), 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+        .lekhika-avatar:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 15px 30px -10px rgba(0, 255, 255, 0.4);
+            border-color: rgba(0, 255, 255, 0.7);
+        }
+        @keyframes subtleFloatPremium {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-5px) scale(1.03); }
+        }
+
+        /* Score feedback pulsing animation */
+        #scoreFeedback.animate-pulse-feedback { animation: pulseFeedbackPremium 2s infinite ease-in-out; }
+        @keyframes pulseFeedbackPremium { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.02); } }
+
+        /* Persona card glow */
+        .persona-card-magical {
+            position: relative;
+            border-width: 1px;
+            border-color: transparent;
+            animation: pulseCardBorderGlowPremium 3s infinite alternate ease-in-out;
+            background: linear-gradient(145deg, rgba(25, 36, 58, 0.7), rgba(40, 51, 70, 0.6));
+            backdrop-filter: blur(5px);
+        }
+        @keyframes pulseCardBorderGlowPremium {
+            from { box-shadow: 0 0 20px rgba(0, 255, 255, 0.15), 0 0 40px rgba(0, 255, 255, 0.1); border-color: rgba(0, 255, 255, 0.2); }
+            to   { box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), 0 0 60px rgba(0, 255, 255, 0.2); border-color: rgba(0, 255, 255, 0.5); }
+        }
+
+        /* Glowing score text */
+        #scoreText.glowing-score-text {
+            animation: pulseScoreTextMagicPremium 1.5s infinite alternate;
+            color: var(--premium-accent);
+        }
+        @keyframes pulseScoreTextMagicPremium {
+            from { text-shadow: 0 0 6px var(--premium-accent-dark), 0 0 10px var(--premium-accent), 0 0 15px #fff; }
+            to   { text-shadow: 0 0 8px var(--premium-accent), 0 0 15px #fff, 0 0 25px var(--premium-accent-dark); }
+        }
+
+        /* Parameter card hovers */
+        .parameter-card {
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out;
+            background-color: rgba(45, 55, 72, 0.7);
+            border-color: rgba(71, 85, 105, 0.5);
+        }
+        .parameter-card:hover {
+            transform: translateY(-5px) scale(1.04);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.15);
+            border-color: var(--premium-accent);
+            background-color: rgba(55, 65, 82, 0.8);
+        }
+        .suggestion-item:hover { transform: translateY(-4px) scale(1.03) perspective(500px) translateZ(10px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
+        .suggestion-item.improvement-type { background-color: rgba(202, 138, 4, 0.15); border-color: rgba(202, 138, 4, 0.4); }
+        .suggestion-item.tip-type { background-color: rgba(14, 165, 233, 0.15); border-color: rgba(14, 165, 233, 0.4); }
+        .suggestion-item.info-type { background-color: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.4); }
+        .suggestion-item.improvement-type:hover { background-color: rgba(202, 138, 4, 0.3); box-shadow: 0 0 15px rgba(202, 138, 4, 0.3); }
+        .suggestion-item.tip-type:hover { background-color: rgba(14, 165, 233, 0.3); box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);}
+        .suggestion-item.info-type:hover { background-color: rgba(34, 197, 94, 0.3); box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);}
+
+        /* Textarea and title styling */
+        #copyInput {
+            background-color: rgba(30, 41, 59, 0.8);
+            border-color: rgba(51, 65, 85, 0.7);
+            color: #e2e8f0;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        #copyInput:focus {
+            background-color: rgba(30, 41, 59, 1);
+            border-color: var(--premium-accent);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+            color: #f8fafc;
+        }
+        .futuristic-title span { background-image: linear-gradient(to right, var(--premium-accent), #c084fc, #f472b6); }
+
+        /* CTA and AI Button Styling */
+        .cta-button, .ai-button {
+            display: inline-block;
+            padding: 0.75rem 2rem; /* 12px 32px */
+            font-size: 0.875rem; /* 14px */
+            font-weight: 600; /* semibold */
+            color: #0a0f1f; /* Dark text for contrast on bright button */
+            background-image: linear-gradient(to right, var(--premium-accent) 0%, #818cf8 50%, var(--premium-accent) 100%); /* Indigo to Cyan gradient */
+            background-size: 200% auto;
+            border: none;
+            border-radius: 0.5rem; /* 8px */
+            box-shadow: 0 4px 15px 0 rgba(0, 255, 255, 0.35);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .cta-button:hover, .ai-button:hover {
+            background-position: right center; /* Change gradient direction */
+            box-shadow: 0 6px 20px 0 rgba(129, 140, 248, 0.4); /* Indigo glow */
+            transform: translateY(-2px);
+        }
         .ai-button:disabled { cursor: not-allowed; color: #94a3b8; background-image: linear-gradient(to right, #334155, #475569); box-shadow: none; transform: none; }
-        .cta-button::before, .ai-button::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%); transform: rotate(45deg); transition: opacity 0.5s ease; opacity: 0; z-index: -1; }        .cta-button:hover::before, .ai-button:hover::before { opacity: 1; }
 
-        @media (max-width: 1024px) { body::before { background-size: auto 40vh; background-position: -5vh center; } }        @media (max-width: 768px) { body::before { background-size: auto 30vh; background-position: -2vh 30%; opacity: 0.2; } }        @media (max-width: 480px) { body::before { opacity: 0.15; background-size: auto 25vh; } }
-    </style></head>
+        .cta-button::before, .ai-button::before { /* Optional: subtle shine effect */
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(45deg);
+            transition: opacity 0.5s ease;
+            opacity: 0;
+            z-index: -1;
+        }
+        .cta-button:hover::before, .ai-button:hover::before {
+            opacity: 1;
+        }
+
+        /* Responsive adjustments for global background */
+        @media (max-width: 1024px) { body::before { background-size: auto 40vh; background-position: -5vh center; } }
+        @media (max-width: 768px) { body::before { background-size: auto 30vh; background-position: -2vh 30%; opacity: 0.2; } }
+        @media (max-width: 480px) { body::before { opacity: 0.15; background-size: auto 25vh; } }
+    </style>
+</head>
 <body class="flex flex-col items-center min-h-screen">
-    <div id="error-container" class="hidden fixed inset-0 bg-slate-900 flex items-center justify-center z-50">
-         <div class="bg-red-900/50 border border-red-700 rounded-lg p-8 max-w-2xl mx-auto text-center">
-            <h2 class="text-3xl font-bold text-red-300">Error</h2>
-            <p id="errorMessage" class="text-red-300 mt-4">An error occurred.</p>
+    <div id="error-container" class="hidden fixed inset-0 bg-slate-900/90 flex items-center justify-center z-50">
+        <div class="bg-red-900/50 border border-red-700 rounded-lg p-8 max-w-2xl mx-auto text-center shadow-xl">
+            <h2 class="text-3xl font-bold text-red-300 mb-4">Error! LekhIkA is Resting.</h2>
+            <p id="errorMessage" class="text-red-300 mt-4 text-lg">An unexpected error occurred or configuration is missing.</p>
+            <p class="text-red-400 text-sm mt-2">Please ensure the Admin Panel settings are correctly saved and the KV store is connected.</p>
         </div>
     </div>
 
-    <div id="app-container" class="w-full">
+    <div id="app-container" class="w-full hidden"> <!-- Hidden by default, shown after config loads -->
         <header class="sticky-header sticky top-0 text-white py-0 px-6 sm:px-10 md:px-16 flex items-center justify-between shadow-lg w-full">
-          <div class="flex items-center gap-3 h-full">
-            <a href="/" aria-label="Homepage" class="flex items-center h-full">
-                <img src="https://copyalche.my/premium/alchemy.png" alt="CopyAlche.my Logo" class="max-h-[60px] w-auto transition-transform duration-300 hover:scale-105">
-            </a>
-          </div>
-          <button id="menuBtn" class="md:hidden focus:outline-none p-2 rounded-md hover:bg-gray-700/50 transition-colors">
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          <nav class="hidden md:flex space-x-6 lg:space-x-8 text-sm font-semibold items-center h-full">
-            <a href="/" class="nav-link">Home</a>
-            <a href="https://copyalche.my/premium/#packages" class="nav-link">Packages</a>
-            <a href="#about" class="nav-link">About</a>
-            <a href="#faq" class="nav-link">FAQ</a>
-            <a href="#testimonials" class="nav-link">Testimonials</a>
-            <a href="https://copyalche.my/premium/lekhika.html" class="nav-link text-yellow-300 hover:text-yellow-200">Lekhika</a>
-          </nav>
+            <div class="flex items-center gap-3 h-full">
+                <a href="/" aria-label="Homepage" class="flex items-center h-full">
+                    <img src="https://copyalche.my/premium/alchemy.png" alt="CopyAlche.my Logo" class="max-h-[60px] w-auto transition-transform duration-300 hover:scale-105">
+                </a>
+            </div>
+            <button id="menuBtn" class="md:hidden focus:outline-none p-2 rounded-md hover:bg-gray-700/50 transition-colors">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <nav class="hidden md:flex space-x-6 lg:space-x-8 text-sm font-semibold items-center h-full">
+                <a href="/" class="nav-link">Home</a>
+                <a href="https://copyalche.my/premium/#packages" class="nav-link">Packages</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#faq" class="nav-link">FAQ</a>
+                <a href="#testimonials" class="nav-link">Testimonials</a>
+                <a href="https://copyalche.my/premium/lekhika.html" class="nav-link text-yellow-300 hover:text-yellow-200">Lekhika</a>
+            </nav>
         </header>
         <nav id="mobileMenu" class="hidden fixed top-[80px] inset-x-0 z-40 flex-col md:hidden bg-black bg-opacity-95 text-white text-center py-4 px-6 shadow-xl space-y-4 transition-transform duration-300 ease-out transform -translate-y-full">
-          <a href="/" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">Home</a>
-          <a href="https://copyalche.my/premium/#packages" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">Packages</a>
-          <a href="#about" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">About</a>
-          <a href="#faq" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">FAQ</a>
-          <a href="#testimonials" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">Testimonials</a>
-          <a href="https://copyalche.my/premium/lekhika.html" class="block py-2 rounded-md text-yellow-300 hover:bg-gray-700/50 transition-colors">Lekhika</a>
+            <a href="/" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">Home</a>
+            <a href="https://copyalche.my/premium/#packages" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">Packages</a>
+            <a href="#about" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">About</a>
+            <a href="#faq" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">FAQ</a>
+            <a href="#testimonials" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">Testimonials</a>
+            <a href="https://copyalche.my/premium/lekhika.html" class="block py-2 rounded-md text-yellow-300 hover:bg-gray-700/50 transition-colors">Lekhika</a>
         </nav>
         <section id="copy-alchemist-lekhika" class="w-full max-w-6xl shadow-2xl rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10 space-y-6 md:space-y-8 my-8 mx-2 sm:mx-4">
             <header class="text-center mb-6 sm:mb-8">
@@ -61,6 +329,7 @@
                 </h1>
                 <p id="subtitle" class="text-slate-400 mt-2 sm:mt-3 text-xs sm:text-sm md:text-base lg:text-lg">Your AI partner for crafting compelling, high-conversion copy.</p>
             </header>
+
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
                 <div class="lg:col-span-7 space-y-4">
                     <label for="copyInput" class="block text-xs sm:text-sm font-semibold text-slate-300 mb-1.5 sm:mb-2">Enter your copy for analysis:</label>
@@ -69,6 +338,7 @@
                         <button id="analyzeBtn" class="ai-button">Unleash AI Analysis</button>
                     </div>
                 </div>
+
                 <div class="lg:col-span-5 flex flex-col items-center space-y-4 sm:space-y-6 p-4 sm:p-6 rounded-xl shadow-2xl persona-card-magical">
                     <div class="flex items-center space-x-3 sm:space-x-4">
                         <img id="lekhikaImage" src="https://copyalche.my/premium/lekhika-ai-logo-close.png" alt="LekhIkA AI Assistant" class="lekhika-avatar w-16 h-16 sm:w-20 md:w-24 sm:h-20 md:h-24 rounded-full border-4 border-purple-400/70 shadow-lg object-cover">
@@ -90,10 +360,12 @@
                     </div>
                 </div>
             </div>
+
             <div>
                 <h3 class="text-lg sm:text-xl md:text-2xl font-semibold text-slate-100 mb-3 sm:mb-4 md:mb-5">Detailed Analysis:</h3>
                 <div id="parametersContainer" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 md:gap-5"></div>
             </div>
+
             <div>
                 <h3 class="text-lg sm:text-xl md:text-2xl font-semibold text-slate-100 mb-3 sm:mb-4">
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">LekhIkA</span> Suggests:
@@ -102,15 +374,35 @@
                     <p class="text-slate-400 italic text-center py-3 sm:py-4 text-xs sm:text-sm">Suggestions from your AI assistant will appear here.</p>
                 </div>
             </div>
-            <div class="text-center py-6 md:py-8"><h3 class="text-xl sm:text-2xl font-semibold text-slate-100 mb-4">Ready to Elevate Your Copy?</h3><p class="text-slate-400 mb-6 max-w-xl mx-auto text-sm sm:text-base">Unlock the full power of LekhIkA and transform your content into compelling masterpieces. Explore our packages to find the perfect fit for your alchemical needs.</p><a href="https://copyalche.my/premium/#packages" class="cta-button">Discover Premium Packages</a></div>
-            <footer class="text-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-700/50 relative z-[1]"><p class="text-xs sm:text-sm text-slate-400">&copy; 2025 <span class="font-semibold text-slate-300">CopyAlche.my</span> - Words transmuted by Anwesh Rath.</p><p class="text-xs text-slate-500 mt-1">(Anwesh is currently perfecting LekhIkA's photoshoot poses. It's a pixel-perfect process.)</p></footer>
+
+            <div class="text-center py-6 md:py-8">
+                <h3 class="text-xl sm:text-2xl font-semibold text-slate-100 mb-4">
+                    Ready to Elevate Your Copy?
+                </h3>
+                <p class="text-slate-400 mb-6 max-w-xl mx-auto text-sm sm:text-base">
+                    Unlock the full power of LekhIkA and transform your content into compelling masterpieces.
+                    Explore our packages to find the perfect fit for your alchemical needs.
+                </p>
+                <a href="https://copyalche.my/premium/#packages" class="cta-button">
+                    Discover Premium Packages
+                </a>
+            </div>
+
+            <footer class="text-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-700/50 relative z-[1]">
+                <p class="text-xs sm:text-sm text-slate-400">
+                    &copy; 2025 <span class="font-semibold text-slate-300">CopyAlche.my</span> - Words transmuted by Anwesh Rath.
+                </p>
+                <p class="text-xs text-slate-500 mt-1">
+                    (Anwesh is currently perfecting LekhIkA's photoshoot poses. It's a pixel-perfect process.)
+                </p>
+            </footer>
         </section>
     </div>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        let lekhikaConfig;
-        
+        let lekhikaConfig; // This will store the configuration fetched from the API
+
         // --- All your original element references ---
         const copyInput = document.getElementById('copyInput');
         const scoreText = document.getElementById('scoreText');
@@ -118,127 +410,332 @@
         const scoreFeedback = document.getElementById('scoreFeedback');
         const parametersContainer = document.getElementById('parametersContainer');
         const suggestionsContainer = document.getElementById('suggestionsContainer');
-        const analyzeBtn = document.getElementById('analyzeBtn');
+        const analyzeBtn = document.getElementById('analyzeBtn'); // New button for AI analysis
         const lekhikaImage = document.getElementById('lekhikaImage');
         const CIRCUMFERENCE = 2 * Math.PI * 40;
 
-        // --- All your original configuration and databases ---
+        // --- Original local configuration and databases (will only be used if API fails or running locally) ---
+        // These are kept here as a fallback and for local development without a Vercel backend
         const WEAK_WORDS_DB = { "very": "extremely", "really": "genuinely", "good": "beneficial", "bad": "detrimental", "nice": "pleasant", "great": "excellent", "awesome": "remarkable", "stuff": "items", "things": "elements", "literally": "", "basically": "", "actually": "", "just": "", "sort of": "somewhat", "kind of": "rather", "a lot": "numerous", "amazing": "impressive", "start": "commence", "use": "utilize", "help": "assist", "get": "obtain", "make": "create", "important": "crucial", "truly": "", "quite": "", "perhaps": "possibly", "maybe": "potentially" };
         const POWER_WORDS_DB = [ "discover", "unlock", "guarantee", "proven", "instant", "exclusive", "limited", "new", "save", "free", "results", "easy", "powerful", "secret", "elite", "premium", "ultimate", "transform", "skyrocket", "imagine", "inspire", "conquer", "master", "revolutionary" ];
         const JARGON_DB = [ "synergy", "paradigm shift", "core competency", "low-hanging fruit", "bandwidth", "value proposition", "drill down", "circle back", "boil the ocean", "ideate", "pivot", "disrupt" ];
         const CTA_PHRASES_DB = [ "buy now", "sign up", "learn more", "get started", "discover more", "shop now", "subscribe today", "download your free guide", "contact us now", "request a demo" ];
-        const ORIGINAL_PARAMETERS_CONFIG = [ { id: "wordCount", name: "Word Count", idealMin: 75, idealMax: 350, weight: 0.5, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" /></svg>' }, { id: "avgSentenceLength", name: "Sentence Flow", idealMin: 10, idealMax: 22, weight: 1, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' }, { id: "readability", name: "Clarity Score", idealFleschKincaid: 60, weight: 1.5, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>' }, { id: "powerWords", name: "Impact Words", weight: 1.5, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>' }, { id: "weakWords", name: "Filler Words", weight: 1.5, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>' }, { id: "passiveVoice", name: "Active Voice Usage", weight: 1, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM20.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0014 8v8a1 1 0 001.6.8l5.333-4z" /></svg>' }, { id: "jargonUsage", name: "Jargon-Free", weight: 1, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.671 7.671a1 1 0 011.414-1.414L12 9.172l2.915-2.915a1 1 0 111.414 1.414L13.414 10.5l2.915 2.915a1 1 0 11-1.414 1.414L12 11.828l-2.915 2.915a1 1 0 11-1.414-1.414L10.586 10.5 7.67 7.671z" /></svg>' }, { id: "emotionalTone", name: "Positive Tone", weight: 1, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' }, { id: "ctaPresence", name: "Call to Action", weight: 1.5, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>' }, { id: "headlineStrength", name: "Headline Impact", weight: 1, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>' } ];
-        const AI_PARAMETERS_CONFIG = [ { id: "readability", name: "Clarity", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>' }, { id: "tone", name: "Tone", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' }, { id: "engagement", name: "Engagement", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>' }, { id: "impact", name: "Impact", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM20.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0014 8v8a1 1 0 001.6.8l5.333-4z" /></svg>' }, { id: "cta", name: "Call to Action", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>' }, { id: "confidence", name: "Confidence", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>' } ];
 
+        // Parameters config for original rule-based analysis (local fallback)
+        const ORIGINAL_PARAMETERS_CONFIG = [
+            { id: "wordCount", name: "Word Count", idealMin: 75, idealMax: 350, weight: 0.5, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" /></svg>' },
+            { id: "avgSentenceLength", name: "Sentence Flow", idealMin: 10, idealMax: 22, weight: 1, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' },
+            { id: "readability", name: "Clarity Score", idealFleschKincaid: 60, weight: 1.5, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>' },
+            { id: "powerWords", name: "Impact Words", weight: 1.5, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>' },
+            { id: "weakWords", name: "Filler Words", weight: 1.5, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>' },
+            { id: "passiveVoice", name: "Active Voice Usage", weight: 1, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM20.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0014 8v8a1 1 0 001.6.8l5.333-4z" /></svg>' },
+            { id: "jargonUsage", name: "Jargon-Free", weight: 1, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.671 7.671a1 1 0 011.414-1.414L12 9.172l2.915-2.915a1 1 0 111.414 1.414L13.414 10.5l2.915 2.915a1 1 0 11-1.414 1.414L12 11.828l-2.915 2.915a1 1 0 11-1.414-1.414L10.586 10.5 7.67 7.671z" /></svg>' },
+            { id: "emotionalTone", name: "Positive Tone", weight: 1, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' },
+            { id: "ctaPresence", name: "Call to Action", weight: 1.5, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>' },
+            { id: "headlineStrength", name: "Headline Impact", weight: 1, icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>' }
+        ];
+
+        // Parameters config for AI-based analysis
+        const AI_PARAMETERS_CONFIG = [
+            { id: "readability", name: "Clarity", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>' },
+            { id: "tone", name: "Tone", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' },
+            { id: "engagement", name: "Engagement", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>' },
+            { id: "impact", name: "Impact", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM20.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0014 8v8a1 1 0 001.6.8l5.333-4z" /></svg>' },
+            { id: "cta", name: "Call to Action", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>' },
+            { id: "confidence", name: "Confidence", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>' }
+        ];
+
+        /**
+         * Shows a full-screen error message and hides the main app content.
+         * @param {string} message - The error message to display.
+         */
         function showError(message) {
             document.getElementById('app-container').style.display = 'none';
             document.getElementById('errorMessage').textContent = message;
-            document.getElementById('error-container').style.display = 'block';
+            document.getElementById('error-container').style.display = 'flex'; // Use flex to center the content
         }
 
+        /**
+         * Loads configuration from the Vercel API and initializes the UI.
+         * If running locally or API fails, falls back to original rule-based analysis.
+         */
         async function loadConfigAndInitialize() {
-            // Check if running on a server (http or https) vs. locally (file)
+            // Check if running on a server (http or https) vs. locally (file://)
             if (window.location.protocol.startsWith('http')) {
-                 try {
+                try {
                     const response = await fetch('/api/config');
                     if (!response.ok) {
                         const errorData = await response.json();
+                        // Display a more user-friendly error if config not found
+                        if (response.status === 404) {
+                            throw new Error('Configuration not found. Please save settings in the admin panel first.');
+                        }
                         throw new Error(errorData.error || `Config server error! Status: ${response.status}`);
                     }
                     lekhikaConfig = await response.json();
-                    
+
+                    // Show the main app container only after successful config load
                     document.getElementById('app-container').style.display = 'block';
+                    // Hide the AI button initially, show later if needed for local mode
                     document.getElementById('analyzeBtn').style.display = 'inline-block';
                     copyInput.setAttribute('placeholder', 'Paste your marketing copy... then click the button below for AI analysis.');
+
+                    // Remove existing real-time listener if it was set
                     if (copyInput.getAttribute('listener') === 'true') {
                         copyInput.removeEventListener('input', handleOriginalRealTimeAnalysis);
+                        copyInput.removeAttribute('listener'); // Remove attribute to signify listener is gone
                     }
 
-
+                    // Update UI elements based on fetched config
                     const uiConf = lekhikaConfig.ui;
                     document.getElementById('mainTitle').firstChild.textContent = uiConf.mainTitle;
                     document.getElementById('styledName').textContent = uiConf.styledName;
                     document.getElementById('subtitle').textContent = uiConf.subtitle;
                     document.getElementById('lekhikaImage').src = uiConf.logoUrl;
-                    document.querySelector('body::before').style.backgroundImage = `url('${uiConf.logoUrl}')`;
+
+                    // Update the CSS variable for the body::before background image
+                    document.documentElement.style.setProperty('--lekhika-bg-logo-url', `url('${uiConf.logoUrl}')`);
                     
+                    // Initialize parameters UI for AI analysis
                     initializeParametersUI(AI_PARAMETERS_CONFIG);
+                    // Attach event listener for the AI analysis button
                     analyzeBtn.addEventListener('click', handleAiAnalysis);
 
                 } catch (error) {
                     console.error("Failed to load remote configuration:", error);
-                    showError(`Failed to load remote configuration: ${error.message}. Please check admin panel.`);
+                    showError(`Failed to load remote configuration: ${error.message}`);
                 }
             } else {
-                // We're running locally. Use the original rule-based system.
+                // We're running locally (file:// protocol). Use the original rule-based system.
                 document.getElementById('app-container').style.display = 'block';
-                document.getElementById('analyzeBtn').style.display = 'none';
+                document.getElementById('analyzeBtn').style.display = 'none'; // Hide AI button in local mode
                 copyInput.setAttribute('placeholder', 'Paste your marketing copy... LekhIkA will analyze it in real-time.');
                 initializeParametersUI(ORIGINAL_PARAMETERS_CONFIG);
                 copyInput.addEventListener('input', handleOriginalRealTimeAnalysis);
-                copyInput.setAttribute('listener', 'true');
+                copyInput.setAttribute('listener', 'true'); // Mark that real-time listener is active
             }
-            
-            const btn = document.getElementById('menuBtn'), menu = document.getElementById('mobileMenu');
-            if (btn && menu) { btn.addEventListener('click', () => { const isHidden = menu.classList.contains('hidden'); if (isHidden) { menu.classList.remove('hidden'); requestAnimationFrame(() => { menu.classList.remove('-translate-y-full'); menu.classList.add('translate-y-0'); }); } else { menu.classList.remove('translate-y-0'); menu.classList.add('-translate-y-full'); menu.addEventListener('transitionend', () => { menu.classList.add('hidden'); }, { once: true }); } }); }
+
+            // Mobile menu toggle logic (already present, moved inside DOMContentLoaded)
+            const btn = document.getElementById('menuBtn');
+            const menu = document.getElementById('mobileMenu');
+            if (btn && menu) {
+                btn.addEventListener('click', () => {
+                    const isHidden = menu.classList.contains('hidden');
+                    if (isHidden) {
+                        menu.classList.remove('hidden');
+                        requestAnimationFrame(() => {
+                            menu.classList.remove('-translate-y-full');
+                            menu.classList.add('translate-y-0');
+                        });
+                    } else {
+                        menu.classList.remove('translate-y-0');
+                        menu.classList.add('-translate-y-full');
+                        menu.addEventListener('transitionend', () => {
+                            menu.classList.add('hidden');
+                        }, { once: true });
+                    }
+                });
+            }
         }
 
+        /**
+         * Handles the click event for the AI Analysis button.
+         * Fetches analysis from the server using primary/fallback AI models.
+         */
         async function handleAiAnalysis() {
             const text = copyInput.value;
             if (!text.trim()) { alert('Please enter some text to analyze.'); return; }
-            resetUIForAnalysis();
+
+            resetUIForAnalysis(); // Prepare UI for new analysis
+
             try {
                 const primaryProvider = lekhikaConfig.model.primaryProvider;
                 let analysis = await attemptAnalysis(text, primaryProvider);
                 updateUIWithAnalysis(analysis);
             } catch (primaryError) {
-                console.warn(`Primary model failed:`, primaryError);
+                console.warn(`Primary model (${lekhikaConfig.model.primaryProvider}) failed:`, primaryError);
                 scoreFeedback.textContent = `Primary model failed. Trying fallback...`;
                 const fallbackProvider = lekhikaConfig.model.fallbackProvider;
                 try {
                     let analysis = await attemptAnalysis(text, fallbackProvider);
                     updateUIWithAnalysis(analysis);
                 } catch (fallbackError) {
-                    console.error(`Fallback model also failed:`, fallbackError);
+                    console.error(`Fallback model (${lekhikaConfig.model.fallbackProvider}) also failed:`, fallbackError);
                     suggestionsContainer.innerHTML = `<p class="text-red-400 text-center py-4">Both AI models failed. Please contact the administrator.</p>`;
-                    scoreFeedback.textContent = "Analysis failed."
+                    scoreFeedback.textContent = "Analysis failed. Double check API keys in Admin Panel.";
+                    scoreFeedback.style.color = '#f87171'; // Red color for error feedback
                 }
             } finally {
                 analyzeBtn.disabled = false;
                 analyzeBtn.textContent = 'Unleash AI Analysis';
             }
         }
+
+        /**
+         * Makes the actual API call to the /api/analyze endpoint.
+         * @param {string} text - The text to send for analysis.
+         * @param {string} provider - The AI provider to use ('gemini' or 'openai').
+         * @returns {Promise<Object>} - The JSON analysis result from the API.
+         * @throws {Error} - If the API response is not OK.
+         */
         async function attemptAnalysis(text, provider) {
-            const response = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, provider }) });
-            if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.error || `Analysis failed for ${provider}.`); }
+            const response = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text, provider })
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `Analysis failed for ${provider}.`);
+            }
             return await response.json();
         }
-        function updateUIWithAnalysis(analysis) { 
+
+        /**
+         * Updates the UI with the analysis results from the AI.
+         * @param {Object} analysis - The analysis object received from the API.
+         */
+        function updateUIWithAnalysis(analysis) {
             updateOverallScoreUI(analysis.overallScore);
             updateScoreFeedback(analysis.overallScore, analysis.feedbackMessage);
             updateAllParameters(analysis.parameters);
-            displaySuggestions(analysis.suggestions, true);
+            displaySuggestions(analysis.suggestions, true); // Pass true to indicate AI suggestions
         }
+
+        /**
+         * Resets UI elements to a loading state before starting AI analysis.
+         */
         function resetUIForAnalysis() {
             analyzeBtn.disabled = true;
             analyzeBtn.textContent = 'Consulting the AI...';
             scoreFeedback.textContent = `LekhIkA is consulting the digital spirits...`;
             suggestionsContainer.innerHTML = `<p class="text-slate-400 italic text-center py-4">Analyzing...</p>`;
+            // Reset parameter bars to 0
             AI_PARAMETERS_CONFIG.forEach(p => updateParameterUI(p.id, 0));
+            scoreText.classList.remove('glowing-score-text');
+            scoreCircleFg.classList.remove('glowing-circle');
+            scoreFeedback.classList.remove('animate-pulse-feedback');
+            scoreFeedback.style.color = ''; // Reset color
         }
 
+        /**
+         * Initializes or re-initializes the parameter display cards in the UI.
+         * @param {Array<Object>} params - The array of parameter configurations to display.
+         */
         function initializeParametersUI(params) {
-            parametersContainer.innerHTML = '';
+            parametersContainer.innerHTML = ''; // Clear existing parameters
             params.forEach((param, index) => {
                 const paramElement = `<div class="parameter-card bg-slate-700 p-2.5 sm:p-3 md:p-4 rounded-lg sm:rounded-xl shadow-md hover:shadow-lg border border-slate-600/80" style="animation: popInAdvanced 0.6s ease-out ${index * 100 + 200}ms forwards; opacity:0; transform: perspective(500px) translateZ(-30px) translateY(15px);"><div class="flex items-center justify-between mb-1.5 sm:mb-2"><div class="flex items-center space-x-1.5 sm:space-x-2"><span class="text-[var(--premium-accent)]">${param.icon || ''}</span><h4 class="text-xs sm:text-sm font-semibold text-slate-200">${param.name}</h4></div><span id="${param.id}ScoreText" class="text-[10px] sm:text-xs font-bold text-[var(--premium-accent)] bg-[var(--premium-accent-dark)]/30 px-1.5 sm:px-2 py-0.5 rounded-full">0/10</span></div><div class="parameter-bar-bg w-full h-2 sm:h-2.5 md:h-3 rounded-full overflow-hidden"><div id="${param.id}Bar" class="parameter-bar-fg h-2 sm:h-2.5 md:h-3 rounded-full"></div></div></div>`;
                 parametersContainer.insertAdjacentHTML('beforeend', paramElement);
             });
         }
 
-        // --- All your original functions, kept for local mode ---
-        function handleOriginalRealTimeAnalysis() { if (this.analysisTimeout) clearTimeout(this.analysisTimeout); this.analysisTimeout = setTimeout(() => { const text = copyInput.value; analyzeOriginalCopy(text); }, 300); }
-        function analyzeOriginalCopy(text) { if (text.trim() === "") { resetOriginalUI(); return; } const words = text.toLowerCase().match(/\b(\w+[\w'-]*\w+|\w+)\b/g) || []; const sentences = text.match(/[^.!?]+(?:[.!?]+["']?|$)/g) || []; const syllables = countSyllablesInText(text); let overallScore = 0; let suggestions = []; ORIGINAL_PARAMETERS_CONFIG.forEach(param => { let paramScore = 0; switch (param.id) { case "wordCount": paramScore = calculateWordCountScore(words.length, param.idealMin, param.idealMax); break; case "avgSentenceLength": paramScore = calculateAvgSentenceLengthScore(words.length, sentences.length, param.idealMin, param.idealMax); break; case "readability": paramScore = calculateReadabilityScore(words.length, sentences.length, syllables, param.idealFleschKincaid); break; case "powerWords": const pwc = countKeywords(text, POWER_WORDS_DB); paramScore = Math.min(10, pwc * 2.5); if (pwc > 0) suggestions.push({ type: "info", text: `Excellent! You've used ${pwc} impactful power word(s). Keep leveraging them!` }); break; case "weakWords": const { count: wwc, found: fww } = findWeakWords(text); paramScore = Math.max(0, 10 - wwc * 2); fww.forEach(fw => { const rep = fw.suggestion ? ` "<strong>${fw.suggestion}</strong>"` : " a stronger alternative"; suggestions.push({ type: "improvement", text: `LekhIkA suggests refining "<strong>${fw.word}</strong>". Consider replacing it with${rep} to boost clarity.` }); }); break; case "passiveVoice": const pc = countPassiveVoice(text); paramScore = Math.max(0, 10 - pc * 3); if (pc > 0) suggestions.push({ type: "improvement", text: `LekhIkA noticed ${pc} instance(s) of passive voice. Active voice often creates more punch!` }); break; case "jargonUsage": const jc = countKeywords(text, JARGON_DB); paramScore = Math.max(0, 10 - jc * 3); if (jc > 0) suggestions.push({ type: "improvement", text: `Your copy contains ${jc} jargon term(s). LekhIkA advises simplifying for a wider audience.` }); break; case "emotionalTone": const posW = ["happy", "joy", "success", "effective", "amazing", "love", "benefit", "achieve", "celebrate", "vibrant", "powerful", "discover", "unlock", "inspire", "imagine", "conquer"]; const posC = countKeywords(text, posW); paramScore = Math.min(10, posC * 2); if (posC === 0 && words.length > 10) suggestions.push({ type: "tip", text: "LekhIkA thinks adding more positive or emotionally resonant words could enhance connection." }); break; case "ctaPresence": const ctaF = CTA_PHRASES_DB.some(p => text.toLowerCase().includes(p)); paramScore = ctaF ? 10 : 2; if (!ctaF && words.length > 30) suggestions.push({ type: "tip", text: "A clear Call to Action (CTA) can significantly improve results. LekhIkA recommends adding one if appropriate." }); else if (ctaF) suggestions.push({ type: "info", text: "Great! Your Call to Action is clear and direct." }); break; case "headlineStrength": const fs = sentences.length > 0 ? sentences[0].trim() : ""; let hs = 0; if (fs) { const hw = fs.split(/\s+/); if (hw.length > 2 && hw.length < 12) hs += 5; const tcw = hw.filter(w => w.length > 1 && w[0] === w[0].toUpperCase() && w.slice(1) === w.slice(1).toLowerCase()).length; if (hw.length > 0 && (tcw / hw.length > 0.3)) hs += 5; } paramScore = hs; if (hs < 7 && words.length > 10 && sentences.length > 0) suggestions.push({ type: "tip", text: "LekhIkA suggests making your opening sentence (headline) more compelling and concise." }); break; } updateParameterUI(param.id, paramScore); overallScore += paramScore * param.weight; }); const maxPossScore = ORIGINAL_PARAMETERS_CONFIG.reduce((s, p) => s + (10 * p.weight), 0); const finalPercScore = Math.max(0, Math.min(100, Math.round((overallScore / maxPossScore) * 100))); updateOverallScoreUI(finalPercScore); displaySuggestions(suggestions, false); updateScoreFeedback(finalPercScore, null); }
-        function resetOriginalUI() { updateOverallScoreUI(0); scoreFeedback.textContent = "Start typing to see your score."; scoreFeedback.className = "text-xs sm:text-sm text-slate-400 mt-2 sm:mt-3 text-center min-h-[18px] sm:min-h-[20px] px-1 sm:px-2"; ORIGINAL_PARAMETERS_CONFIG.forEach(p => updateParameterUI(p.id, 0)); suggestionsContainer.innerHTML = '<p class="text-slate-400 italic text-center py-3 sm:py-4 text-xs sm:text-sm">No suggestions yet. Let LekhIkA analyze your copy!</p>'; scoreText.classList.remove('glowing-score-text'); scoreCircleFg.classList.remove('glowing-circle'); }
+        // --- Original functions, kept for local mode fallback ---
+        // These functions implement the rule-based analysis that runs when the API is not available (e.g., local file access).
+        // They are mostly unchanged from your original `lekhika.html` file.
+
+        function handleOriginalRealTimeAnalysis() {
+            if (this.analysisTimeout) clearTimeout(this.analysisTimeout);
+            this.analysisTimeout = setTimeout(() => {
+                const text = copyInput.value;
+                analyzeOriginalCopy(text);
+            }, 300);
+        }
+
+        function analyzeOriginalCopy(text) {
+            if (text.trim() === "") {
+                resetOriginalUI();
+                return;
+            }
+            const words = text.toLowerCase().match(/\b(\w+[\w'-]*\w+|\w+)\b/g) || [];
+            const sentences = text.match(/[^.!?]+(?:[.!?]+["']?|$)/g) || [];
+            const syllables = countSyllablesInText(text);
+
+            let overallScore = 0;
+            let suggestions = [];
+
+            ORIGINAL_PARAMETERS_CONFIG.forEach(param => {
+                let paramScore = 0;
+                switch (param.id) {
+                    case "wordCount":
+                        paramScore = calculateWordCountScore(words.length, param.idealMin, param.idealMax);
+                        break;
+                    case "avgSentenceLength":
+                        paramScore = calculateAvgSentenceLengthScore(words.length, sentences.length, param.idealMin, param.idealMax);
+                        break;
+                    case "readability":
+                        paramScore = calculateReadabilityScore(words.length, sentences.length, syllables, param.idealFleschKincaid);
+                        break;
+                    case "powerWords":
+                        const pwc = countKeywords(text, POWER_WORDS_DB);
+                        paramScore = Math.min(10, pwc * 2.5);
+                        if (pwc > 0) suggestions.push({ type: "info", text: `Excellent! You've used ${pwc} impactful power word(s). Keep leveraging them!` });
+                        break;
+                    case "weakWords":
+                        const { count: wwc, found: fww } = findWeakWords(text);
+                        paramScore = Math.max(0, 10 - wwc * 2);
+                        fww.forEach(fw => {
+                            const rep = fw.suggestion ? ` "<strong>${fw.suggestion}</strong>"` : " a stronger alternative";
+                            suggestions.push({ type: "improvement", text: `LekhIkA suggests refining "<strong>${fw.word}</strong>". Consider replacing it with${rep} to boost clarity.` });
+                        });
+                        break;
+                    case "passiveVoice":
+                        const pc = countPassiveVoice(text);
+                        paramScore = Math.max(0, 10 - pc * 3);
+                        if (pc > 0) suggestions.push({ type: "improvement", text: `LekhIkA noticed ${pc} instance(s) of passive voice. Active voice often creates more punch!` });
+                        break;
+                    case "jargonUsage":
+                        const jc = countKeywords(text, JARGON_DB);
+                        paramScore = Math.max(0, 10 - jc * 3);
+                        if (jc > 0) suggestions.push({ type: "improvement", text: `Your copy contains ${jc} jargon term(s). LekhIkA advises simplifying for a wider audience.` });
+                        break;
+                    case "emotionalTone":
+                        const posW = ["happy", "joy", "success", "effective", "amazing", "love", "benefit", "achieve", "celebrate", "vibrant", "powerful", "discover", "unlock", "inspire", "imagine", "conquer"];
+                        const posC = countKeywords(text, posW);
+                        paramScore = Math.min(10, posC * 2);
+                        if (posC === 0 && words.length > 10) suggestions.push({ type: "tip", text: "LekhIkA thinks adding more positive or emotionally resonant words could enhance connection." });
+                        break;
+                    case "ctaPresence":
+                        const ctaF = CTA_PHRASES_DB.some(p => text.toLowerCase().includes(p));
+                        paramScore = ctaF ? 10 : 2;
+                        if (!ctaF && words.length > 30) suggestions.push({ type: "tip", text: "A clear Call to Action (CTA) can significantly improve results. LekhIkA recommends adding one if appropriate." });
+                        else if (ctaF) suggestions.push({ type: "info", text: "Great! Your Call to Action is clear and direct." });
+                        break;
+                    case "headlineStrength":
+                        const fs = sentences.length > 0 ? sentences[0].trim() : "";
+                        let hs = 0;
+                        if (fs) {
+                            const hw = fs.split(/\s+/);
+                            if (hw.length > 2 && hw.length < 12) hs += 5;
+                            const tcw = hw.filter(w => w.length > 1 && w[0] === w[0].toUpperCase() && w.slice(1) === w.slice(1).toLowerCase()).length;
+                            if (hw.length > 0 && (tcw / hw.length > 0.3)) hs += 5;
+                        }
+                        paramScore = hs;
+                        if (hs < 7 && words.length > 10 && sentences.length > 0) suggestions.push({ type: "tip", text: "LekhIkA suggests making your opening sentence (headline) more compelling and concise." });
+                        break;
+                }
+                updateParameterUI(param.id, paramScore);
+                overallScore += paramScore * param.weight;
+            });
+
+            const maxPossScore = ORIGINAL_PARAMETERS_CONFIG.reduce((s, p) => s + (10 * p.weight), 0);
+            const finalPercScore = Math.max(0, Math.min(100, Math.round((overallScore / maxPossScore) * 100)));
+            updateOverallScoreUI(finalPercScore);
+            displaySuggestions(suggestions, false); // Pass false for local/rule-based suggestions
+            updateScoreFeedback(finalPercScore, null); // Null message for rule-based feedback
+        }
+
+        function resetOriginalUI() {
+            updateOverallScoreUI(0);
+            scoreFeedback.textContent = "Start typing to see your score.";
+            scoreFeedback.className = "text-xs sm:text-sm text-slate-400 mt-2 sm:mt-3 text-center min-h-[18px] sm:min-h-[20px] px-1 sm:px-2";
+            ORIGINAL_PARAMETERS_CONFIG.forEach(p => updateParameterUI(p.id, 0));
+            suggestionsContainer.innerHTML = '<p class="text-slate-400 italic text-center py-3 sm:py-4 text-xs sm:text-sm">No suggestions yet. Let LekhIkA analyze your copy!</p>';
+            scoreText.classList.remove('glowing-score-text');
+            scoreCircleFg.classList.remove('glowing-circle');
+        }
+
+        // Helper functions for original rule-based analysis (unchanged)
         function calculateWordCountScore(c, min, max) { if (c < min) return Math.max(0, (c / min) * 6); if (c > max) return Math.max(0, 10 - ((c - max) / (max * 0.5)) * 10); return 10; }
         function calculateAvgSentenceLengthScore(wc, sc, minA, maxA) { if (sc === 0) return 0; const avg = wc / sc; if (avg < minA) return Math.max(0, (avg / minA) * 6); if (avg > maxA) return Math.max(0, 10 - ((avg - maxA) / (maxA * 0.4)) * 10); return 10; }
         function calculateReadabilityScore(wc, sc, syc, idealFK) { if (wc < 10 || sc === 0) return 0; const asl = wc / sc; const asw = syc / wc; if (asw === 0 && wc > 0) return 2; if (wc === 0) return 0; const fs = 206.835 - (1.015 * asl) - (84.6 * asw); if (fs >= idealFK + 10) return 10; if (fs >= idealFK - 10) return 8; if (fs > 50) return 6; if (fs > 30) return 3; return 1; }
@@ -246,12 +743,186 @@
         function countKeywords(t, kws) { let c = 0; const lt = t.toLowerCase(); kws.forEach(kw => { const rgx = new RegExp(`\\b${kw.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g'); if (lt.match(rgx)) { c++; } }); return c; }
         function findWeakWords(t) { let o = 0; let ufw = new Set(); const ws = t.toLowerCase().match(/\b(\w+[\w'-]*\w+|\w+)\b/g) || []; ws.forEach(w => { if (WEAK_WORDS_DB.hasOwnProperty(w)) { o++; ufw.add(w); } }); const suggs = Array.from(ufw).map(w => ({ word: w, suggestion: WEAK_WORDS_DB[w] })); return { count: o, found: suggs }; }
         function countPassiveVoice(t) { const prgx = /\b(am|is|are|was|were|be|being|been)\s+([\w'-]+(?:ed|en)|(?:bought|brought|built|caught|chosen|done|drawn|driven|eaten|fallen|felt|fought|found|flown|forgotten|frozen|given|gone|grown|had|heard|hidden|held|kept|known|laid|led|left|lent|lost|made|meant|met|paid|put|read|ridden|rung|risen|run|said|seen|sold|sent|shaken|shone|shot|shown|sung|sunk|sat|slept|spoken|spent|stood|stolen|stuck|sworn|swept|swum|taken|taught|torn|told|thought|thrown|understood|woken|worn|won|written))\b/gi; const ms = t.match(prgx); return ms ? ms.length : 0; }
-        function updateOverallScoreUI(s) { let cs = parseInt(scoreText.textContent) || 0; const ts = Math.round(s); const dur = 1200; const st = 20; const tSteps = dur / st; let inc = (ts - cs) / tSteps; if (ts !== cs && inc === 0) { inc = ts > cs ? 1 / tSteps : -1 / tSteps; } let stepC = 0; function animS() { if (stepC >= tSteps) { scoreText.textContent = ts; const off = CIRCUMFERENCE - (ts / 100) * CIRCUMFERENCE; scoreCircleFg.style.strokeDashoffset = Math.max(0, Math.min(CIRCUMFERENCE, off)); return; } cs += inc; if ((inc > 0 && cs > ts) || (inc < 0 && cs < ts)) { cs = ts; } scoreText.textContent = Math.round(cs); stepC++; requestAnimationFrame(animS); } if (ts !== (parseInt(scoreText.textContent) || 0)) { animS(); } else { const off = CIRCUMFERENCE - (ts / 100) * CIRCUMFERENCE; scoreCircleFg.style.strokeDashoffset = Math.max(0, Math.min(CIRCUMFERENCE, off)); } if (s > 75) { scoreText.classList.add('glowing-score-text'); scoreCircleFg.classList.add('glowing-circle'); } else { scoreText.classList.remove('glowing-score-text'); scoreCircleFg.classList.remove('glowing-circle'); }}
-        function updateParameterUI(pId, s) { const barEl = document.getElementById(`${pId}Bar`); const txtEl = document.getElementById(`${pId}ScoreText`); if (barEl && txtEl) { const perc = Math.min(100, Math.max(0, s * 10)); barEl.style.width = `${perc}%`; txtEl.textContent = `${Math.round(s)}/10`; if (perc < 30) barEl.style.backgroundColor = '#ef4444'; else if (perc < 70) barEl.style.backgroundColor = '#f59e0b'; else barEl.style.backgroundColor = '#22c55e'; } }
-        function updateAllParameters(params) { if(!params) return; for (const key in params) { if (Object.hasOwnProperty.call(params, key)) { updateParameterUI(key.toLowerCase(), params[key]); } } }
-        function displaySuggestions(suggs, isAI) { suggestionsContainer.innerHTML = ''; if (!suggs || suggs.length === 0) { suggestionsContainer.innerHTML = '<p class="text-slate-400 italic text-center py-3 sm:py-4 text-xs sm:text-sm">No suggestions yet. Let LekhIkA analyze your copy!</p>'; return; } suggs.forEach((s, i) => { let icon = ''; let baseTC = 'text-slate-300'; let iconCC = 'text-[var(--premium-accent)]'; let typeC = ''; if (s.type === "improvement") { icon = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'; iconCC = 'text-amber-400'; typeC = 'improvement-type'; } else if (s.type === "tip") { icon = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 14v-2m0-6H9.663a2.649 2.649 0 00-2.563 2.163 2.649 2.649 0 00-.09 1.837M12 12h2.337c1.437 0 2.618-1.188 2.528-2.625-.09-.1441-.09-1.837 0-1.837A2.649 2.649 0 0014.337 6H12" /></svg>'; iconCC = 'text-sky-400'; typeC = 'tip-type'; } else { icon = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'; iconCC = 'text-green-400'; typeC = 'info-type'; } const suggEl = document.createElement('div'); suggEl.className = `suggestion-item ${typeC} flex items-start p-2.5 sm:p-3 rounded-lg shadow-sm transition-all duration-300`; suggEl.style.animationDelay = `${i * 70}ms`; const iconSpan = document.createElement('span'); iconSpan.className = `${iconCC} mr-2 sm:mr-2.5 mt-0.5`; if (!isAI) { iconSpan.innerHTML = icon; } const textP = document.createElement('p'); textP.className = `text-[11px] sm:text-xs md:text-sm ${baseTC}`; textP.innerHTML = s.text; suggEl.appendChild(iconSpan); suggEl.appendChild(textP); suggestionsContainer.appendChild(suggEl); }); }
-        function updateScoreFeedback(s, message) { let ft = ""; let tcc = "text-slate-400"; scoreFeedback.classList.remove('animate-pulse-feedback'); if (s < 30) { ft = "LekhIkA sees room for significant enhancement."; tcc = "text-red-400"; } else if (s < 50) { ft = "Good start! LekhIkA has some ideas to make it stronger."; tcc = "text-amber-400"; } else if (s < 75) { ft = "Nice work! LekhIkA suggests a few tweaks for greater impact."; tcc = "text-yellow-400"; } else if (s < 90) { ft = "Excellent copy! LekhIkA is impressed. Truly premium work!"; tcc = "text-lime-400"; } else { ft = "Outstanding! This copy is pure alchemy, says LekhIkA! Visionary!"; tcc = "text-[var(--premium-accent)] font-semibold"; } scoreFeedback.textContent = message || ft; scoreFeedback.className = `text-xs sm:text-sm ${tcc} mt-2 sm:mt-3 text-center min-h-[18px] sm:min-h-[20px] px-1 sm:px-2 transition-all duration-300`; setTimeout(() => scoreFeedback.classList.add('animate-pulse-feedback'), 50); }
-        
+
+        /**
+         * Updates the overall score displayed in the circular progress bar.
+         * @param {number} s - The score (0-100) to display.
+         */
+        function updateOverallScoreUI(s) {
+            let cs = parseInt(scoreText.textContent) || 0; // Current score displayed
+            const ts = Math.round(s); // Target score
+            const dur = 1200; // Duration of animation in ms
+            const st = 20; // Step interval in ms
+            const tSteps = dur / st; // Total animation steps
+            let inc = (ts - cs) / tSteps; // Increment per step
+
+            // Prevent infinite loop if target is same as current and increment is 0
+            if (ts !== cs && inc === 0) {
+                inc = ts > cs ? 1 / tSteps : -1 / tSteps;
+            }
+
+            let stepC = 0;
+            function animS() {
+                if (stepC >= tSteps) {
+                    scoreText.textContent = ts;
+                    const off = CIRCUMFERENCE - (ts / 100) * CIRCUMFERENCE;
+                    scoreCircleFg.style.strokeDashoffset = Math.max(0, Math.min(CIRCUMFERENCE, off));
+                    return;
+                }
+                cs += inc;
+                // Ensure we don't overshoot the target score due to floating point inaccuracies
+                if ((inc > 0 && cs > ts) || (inc < 0 && cs < ts)) {
+                    cs = ts;
+                }
+                scoreText.textContent = Math.round(cs);
+                stepC++;
+                requestAnimationFrame(animS);
+            }
+
+            // Only animate if target score is different
+            if (ts !== (parseInt(scoreText.textContent) || 0)) {
+                animS();
+            } else {
+                // If score is the same, just ensure dashoffset is correct
+                const off = CIRCUMFERENCE - (ts / 100) * CIRCUMFERENCE;
+                scoreCircleFg.style.strokeDashoffset = Math.max(0, Math.min(CIRCUMFERENCE, off));
+            }
+
+            // Apply glowing class based on score for both AI and original modes
+            if (s > 75) {
+                scoreText.classList.add('glowing-score-text');
+                scoreCircleFg.classList.add('glowing-circle');
+            } else {
+                scoreText.classList.remove('glowing-score-text');
+                scoreCircleFg.classList.remove('glowing-circle');
+            }
+        }
+
+        /**
+         * Updates a single parameter's UI bar and text.
+         * @param {string} pId - The ID of the parameter (e.g., 'readability', 'tone').
+         * @param {number} s - The score for the parameter (0-10).
+         */
+        function updateParameterUI(pId, s) {
+            const barEl = document.getElementById(`${pId}Bar`);
+            const txtEl = document.getElementById(`${pId}ScoreText`);
+            if (barEl && txtEl) {
+                const perc = Math.min(100, Math.max(0, s * 10)); // Convert 0-10 score to 0-100 percentage
+                barEl.style.width = `${perc}%`;
+                txtEl.textContent = `${Math.round(s)}/10`;
+
+                // Set color based on score
+                if (perc < 30) barEl.style.backgroundColor = '#ef4444'; // Red
+                else if (perc < 70) barEl.style.backgroundColor = '#f59e0b'; // Amber
+                else barEl.style.backgroundColor = '#22c55e'; // Green
+            }
+        }
+
+        /**
+         * Updates all parameter UI elements from an analysis object.
+         * @param {Object} params - Object where keys are parameter IDs and values are scores (0-10).
+         */
+        function updateAllParameters(params) {
+            if (!params) return;
+            for (const key in params) {
+                if (Object.hasOwnProperty.call(params, key)) {
+                    updateParameterUI(key.toLowerCase(), params[key]);
+                }
+            }
+        }
+
+        /**
+         * Displays a list of suggestions in the UI.
+         * @param {Array<Object>} suggs - An array of suggestion objects { type: 'improvement'|'tip'|'info', text: '...' }.
+         * @param {boolean} isAI - True if suggestions are from AI, false if from original rule-based system.
+         */
+        function displaySuggestions(suggs, isAI) {
+            suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+            if (!suggs || suggs.length === 0) {
+                suggestionsContainer.innerHTML = '<p class="text-slate-400 italic text-center py-3 sm:py-4 text-xs sm:text-sm">No suggestions yet. Let LekhIkA analyze your copy!</p>';
+                return;
+            }
+
+            suggs.forEach((s, i) => {
+                let icon = '';
+                let baseTC = 'text-slate-300'; // Default text color
+                let iconCC = 'text-[var(--premium-accent)]'; // Default icon color (cyan accent)
+                let typeC = ''; // Class for type-specific styling
+
+                // Determine icon and colors based on suggestion type
+                if (s.type === "improvement") {
+                    icon = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+                    iconCC = 'text-amber-400';
+                    baseTC = 'text-amber-200';
+                    typeC = 'improvement-type';
+                } else if (s.type === "tip") {
+                    icon = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 14v-2m0-6H9.663a2.649 2.649 0 00-2.563 2.163 2.649 2.649 0 00-.09 1.837M12 12h2.337c1.437 0 2.618-1.188 2.528-2.625-.09-.1441-.09-1.837 0-1.837A2.649 2.649 0 0014.337 6H12" /></svg>';
+                    iconCC = 'text-sky-400';
+                    baseTC = 'text-sky-200';
+                    typeC = 'tip-type';
+                } else { // info type
+                    icon = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+                    iconCC = 'text-green-400';
+                    baseTC = 'text-green-200';
+                    typeC = 'info-type';
+                }
+
+                const suggEl = document.createElement('div');
+                suggEl.className = `suggestion-item ${typeC} flex items-start p-2.5 sm:p-3 rounded-lg shadow-sm transition-all duration-300`;
+                suggEl.style.animationDelay = `${i * 70}ms`; // Staggered animation
+
+                const iconSpan = document.createElement('span');
+                iconSpan.className = `${iconCC} mr-2 sm:mr-2.5 mt-0.5`;
+                // Only add icon if it's an AI suggestion or if it's explicitly part of original config (which it is)
+                // The original implementation had icons as part of the config, so this is fine.
+                iconSpan.innerHTML = icon;
+
+
+                const textP = document.createElement('p');
+                textP.className = `text-[11px] sm:text-xs md:text-sm ${baseTC}`;
+                textP.innerHTML = s.text;
+
+                suggEl.appendChild(iconSpan);
+                suggEl.appendChild(textP);
+                suggestionsContainer.appendChild(suggEl);
+            });
+        }
+
+        /**
+         * Updates the feedback message below the score circle.
+         * @param {number} s - The overall efficacy score.
+         * @param {string|null} message - Optional. A custom message from the AI. If null, a generic message is used.
+         */
+        function updateScoreFeedback(s, message) {
+            let ft = ""; // Feedback Text
+            let tcc = "text-slate-400"; // Text Color Class
+
+            scoreFeedback.classList.remove('animate-pulse-feedback'); // Reset animation
+
+            if (message) { // If a custom message is provided (usually from AI)
+                ft = message;
+                // AI messages might dynamically get their own color from backend, or we can infer here
+                if (s < 30) tcc = "text-red-400";
+                else if (s < 50) tcc = "text-amber-400";
+                else if (s < 75) tcc = "text-yellow-400";
+                else if (s < 90) tcc = "text-lime-400";
+                else tcc = "text-[var(--premium-accent)] font-semibold";
+            } else { // Generic messages for rule-based or general states
+                if (s < 30) { ft = "LekhIkA sees room for significant enhancement."; tcc = "text-red-400"; }
+                else if (s < 50) { ft = "Good start! LekhIkA has some ideas to make it stronger."; tcc = "text-amber-400"; }
+                else if (s < 75) { ft = "Nice work! LekhIkA suggests a few tweaks for greater impact."; tcc = "text-yellow-400"; }
+                else if (s < 90) { ft = "Excellent copy! LekhIkA is impressed. Truly premium work!"; tcc = "text-lime-400"; }
+                else { ft = "Outstanding! This copy is pure alchemy, says LekhIkA! Visionary!"; tcc = "text-[var(--premium-accent)] font-semibold"; }
+            }
+
+            scoreFeedback.textContent = ft;
+            scoreFeedback.className = `text-xs sm:text-sm ${tcc} mt-2 sm:mt-3 text-center min-h-[18px] sm:min-h-[20px] px-1 sm:px-2 transition-all duration-300`;
+            setTimeout(() => scoreFeedback.classList.add('animate-pulse-feedback'), 50); // Re-apply animation
+        }
+
+        // Call the main initialization function when the DOM is ready
         loadConfigAndInitialize();
     });
-    </script></body></html>
+    </script>
+</body>
+</html>
