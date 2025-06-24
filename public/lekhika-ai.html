@@ -15,65 +15,68 @@
       <nav class="hidden md:flex space-x-6 lg:space-x-8 text-sm font-semibold items-center h-full"><a href="/" class="nav-link">Home</a><a href="https://copyalche.my/premium/#packages" class="nav-link">Packages</a><a href="#about" class="nav-link">About</a><a href="#faq" class="nav-link">FAQ</a><a href="#testimonials" class="nav-link">Testimonials</a><a href="https://copyalche.my/premium/lekhika.html" class="nav-link text-yellow-300 hover:text-yellow-200">Lekhika</a></nav>
     </header>
     <nav id="mobileMenu" class="hidden fixed top-[80px] inset-x-0 z-40 flex-col md:hidden bg-black bg-opacity-95 text-white text-center py-4 px-6 shadow-xl space-y-4 transition-transform duration-300 ease-out transform -translate-y-full"><a href="/" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">Home</a><a href="https://copyalche.my/premium/#packages" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">Packages</a><a href="#about" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">About</a><a href="#faq" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">FAQ</a><a href="#testimonials" class="block py-2 rounded-md hover:bg-gray-700/50 transition-colors">Testimonials</a><a href="https://copyalche.my/premium/lekhika.html" class="block py-2 rounded-md text-yellow-300 hover:bg-gray-700/50 transition-colors">Lekhika</a></nav>
+    
     <div id="app-container" class="w-full hidden">
-    <section id="copy-alchemist-lekhika" class="w-full max-w-6xl shadow-2xl rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10 space-y-6 md:space-y-8 my-8 mx-2 sm:mx-4">
-        <header class="text-center mb-6 sm:mb-8">
-            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-100 futuristic-title">
-                <span id="mainTitle"></span><span id="styledName" class="text-transparent bg-clip-text"></span>
-            </h1>
-            <p id="subtitle" class="text-slate-400 mt-2 sm:mt-3 text-xs sm:text-sm md:text-base lg:text-lg"></p>
-        </header>
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
-            <div class="lg:col-span-7 space-y-4">
-                <label for="copyInput" class="block text-xs sm:text-sm font-semibold text-slate-300 mb-1.5 sm:mb-2">Enter your copy for analysis:</label>
-                <textarea id="copyInput" rows="12" class="w-full p-3 sm:p-4 border border-slate-600 bg-slate-700 text-slate-200 rounded-lg sm:rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 ease-in-out resize-none text-sm sm:text-base placeholder-slate-500" placeholder="Paste your marketing copy, email, blog post, or any text here... Then click the button below to analyze it."></textarea>
-                <div class="text-center">
-                    <button id="analyzeBtn" class="ai-button">Unleash AI Analysis</button>
-                </div>
-            </div>
-            <div class="lg:col-span-5 flex flex-col items-center space-y-4 sm:space-y-6 p-4 sm:p-6 rounded-xl shadow-2xl persona-card-magical">
-                 <div class="flex items-center space-x-3 sm:space-x-4">
-                    <img id="lekhikaImage" src="" alt="LekhIkA AI Assistant" class="lekhika-avatar w-16 h-16 sm:w-20 md:w-24 sm:h-20 md:h-24 rounded-full border-4 border-purple-400/70 shadow-lg object-cover">
-                    <div>
-                        <h2 class="text-base sm:text-lg md:text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-300 to-orange-300">LekhIkA</h2>
-                        <p class="text-xs sm:text-sm text-slate-300">Your Copy Alchemist</p>
+        <section id="copy-alchemist-lekhika" class="w-full max-w-6xl shadow-2xl rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10 space-y-6 md:space-y-8 my-8 mx-2 sm:mx-4">
+            <header class="text-center mb-6 sm:mb-8">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-100 futuristic-title">
+                    <span id="mainTitle"></span><span id="styledName" class="text-transparent bg-clip-text"></span>
+                </h1>
+                <p id="subtitle" class="text-slate-400 mt-2 sm:mt-3 text-xs sm:text-sm md:text-base lg:text-lg"></p>
+            </header>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
+                <div class="lg:col-span-7 space-y-4">
+                    <label for="copyInput" class="block text-xs sm:text-sm font-semibold text-slate-300 mb-1.5 sm:mb-2">Enter your copy for analysis:</label>
+                    <textarea id="copyInput" rows="12" class="w-full p-3 sm:p-4 border border-slate-600 bg-slate-700 text-slate-200 rounded-lg sm:rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 ease-in-out resize-none text-sm sm:text-base placeholder-slate-500" placeholder="Paste your marketing copy, email, blog post, or any text here... Then click the button below to analyze it."></textarea>
+                    <div class="text-center">
+                        <button id="analyzeBtn" class="ai-button">Unleash AI Analysis</button>
                     </div>
                 </div>
-                <div class="text-center w-full">
-                    <h3 class="text-sm sm:text-base md:text-lg font-semibold text-slate-200 mb-1.5 sm:mb-2">Overall Efficacy Score</h3>
-                    <div class="relative w-32 h-32 sm:w-36 md:w-40 lg:w-48 sm:h-36 md:h-40 lg:h-48 mx-auto">
-                        <svg class="transform -rotate-90" viewBox="0 0 100 100">
-                            <circle class="score-circle-bg" cx="50" cy="50" r="40" stroke-width="8" fill="transparent"/>
-                            <circle id="scoreCircleFg" class="score-circle-fg" cx="50" cy="50" r="40" stroke-width="8" fill="transparent"/>
-                        </svg>
-                        <div id="scoreText" class="absolute inset-0 flex items-center justify-center text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-indigo-300">0</div>
+                <div class="lg:col-span-5 flex flex-col items-center space-y-4 sm:space-y-6 p-4 sm:p-6 rounded-xl shadow-2xl persona-card-magical">
+                    <div class="flex items-center space-x-3 sm:space-x-4">
+                        <img id="lekhikaImage" src="" alt="LekhIkA AI Assistant" class="lekhika-avatar w-16 h-16 sm:w-20 md:w-24 sm:h-20 md:h-24 rounded-full border-4 border-purple-400/70 shadow-lg object-cover">
+                        <div>
+                            <h2 class="text-base sm:text-lg md:text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-300 to-orange-300">LekhIkA</h2>
+                            <p class="text-xs sm:text-sm text-slate-300">Your Copy Alchemist</p>
+                        </div>
                     </div>
-                    <p id="scoreFeedback" class="text-xs sm:text-sm text-slate-400 mt-2 sm:mt-3 text-center min-h-[18px] sm:min-h-[20px] px-1 sm:px-2">Ready to analyze your text.</p>
+                    <div class="text-center w-full">
+                        <h3 class="text-sm sm:text-base md:text-lg font-semibold text-slate-200 mb-1.5 sm:mb-2">Overall Efficacy Score</h3>
+                        <div class="relative w-32 h-32 sm:w-36 md:w-40 lg:w-48 sm:h-36 md:h-40 lg:h-48 mx-auto">
+                            <svg class="transform -rotate-90" viewBox="0 0 100 100">
+                                <circle class="score-circle-bg" cx="50" cy="50" r="40" stroke-width="8" fill="transparent"/>
+                                <circle id="scoreCircleFg" class="score-circle-fg" cx="50" cy="50" r="40" stroke-width="8" fill="transparent"/>
+                            </svg>
+                            <div id="scoreText" class="absolute inset-0 flex items-center justify-center text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-indigo-300">0</div>
+                        </div>
+                        <p id="scoreFeedback" class="text-xs sm:text-sm text-slate-400 mt-2 sm:mt-3 text-center min-h-[18px] sm:min-h-[20px] px-1 sm:px-2">Ready to analyze your text.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div>
-            <h3 class="text-lg sm:text-xl md:text-2xl font-semibold text-slate-100 mb-3 sm:mb-4 md:mb-5">Detailed Analysis:</h3>
-            <div id="parametersContainer" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 md:gap-5"></div>
-        </div>
-        <div>
-            <h3 class="text-lg sm:text-xl md:text-2xl font-semibold text-slate-100 mb-3 sm:mb-4">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">LekhIkA</span> Suggests:
-            </h3>
-            <div id="suggestionsContainer" class="suggestions-container max-h-60 sm:max-h-72 md:max-h-80 overflow-y-auto bg-slate-700/40 p-3 sm:p-4 md:p-5 rounded-xl space-y-2.5 sm:space-y-3 md:space-y-3.5 shadow-inner border border-slate-600/30">
-                <p class="text-slate-400 italic text-center py-3 sm:py-4 text-xs sm:text-sm">Suggestions from your AI assistant will appear here.</p>
+            <div>
+                <h3 class="text-lg sm:text-xl md:text-2xl font-semibold text-slate-100 mb-3 sm:mb-4 md:mb-5">Detailed Analysis:</h3>
+                <div id="parametersContainer" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 md:gap-5"></div>
             </div>
-        </div>
-        <div class="text-center py-6 md:py-8"><h3 class="text-xl sm:text-2xl font-semibold text-slate-100 mb-4">Ready to Elevate Your Copy?</h3><p class="text-slate-400 mb-6 max-w-xl mx-auto text-sm sm:text-base">Unlock the full power of LekhIkA and transform your content into compelling masterpieces. Explore our packages to find the perfect fit for your alchemical needs.</p><a href="https://copyalche.my/premium/#packages" class="cta-button">Discover Premium Packages</a></div>
-        <footer class="text-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-700/50 relative z-[1]"><p class="text-xs sm:text-sm text-slate-400">&copy; 2025 <span class="font-semibold text-slate-300">CopyAlche.my</span> - Words transmuted by Anwesh Rath.</p><p class="text-xs text-slate-500 mt-1">(Anwesh is currently perfecting LekhIkA's photoshoot poses. It's a pixel-perfect process.)</p></footer>
-    </section>
+            <div>
+                <h3 class="text-lg sm:text-xl md:text-2xl font-semibold text-slate-100 mb-3 sm:mb-4">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">LekhIkA</span> Suggests:
+                </h3>
+                <div id="suggestionsContainer" class="suggestions-container max-h-60 sm:max-h-72 md:max-h-80 overflow-y-auto bg-slate-700/40 p-3 sm:p-4 md:p-5 rounded-xl space-y-2.5 sm:space-y-3 md:space-y-3.5 shadow-inner border border-slate-600/30">
+                    <p class="text-slate-400 italic text-center py-3 sm:py-4 text-xs sm:text-sm">Suggestions from your AI assistant will appear here.</p>
+                </div>
+            </div>
+            <div class="text-center py-6 md:py-8"><h3 class="text-xl sm:text-2xl font-semibold text-slate-100 mb-4">Ready to Elevate Your Copy?</h3><p class="text-slate-400 mb-6 max-w-xl mx-auto text-sm sm:text-base">Unlock the full power of LekhIkA and transform your content into compelling masterpieces. Explore our packages to find the perfect fit for your alchemical needs.</p><a href="https://copyalche.my/premium/#packages" class="cta-button">Discover Premium Packages</a></div>
+            <footer class="text-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-700/50 relative z-[1]"><p class="text-xs sm:text-sm text-slate-400">&copy; 2025 <span class="font-semibold text-slate-300">CopyAlche.my</span> - Words transmuted by Anwesh Rath.</p><p class="text-xs text-slate-500 mt-1">(Anwesh is currently perfecting LekhIkA's photoshoot poses. It's a pixel-perfect process.)</p></footer>
+        </section>
     </div>
+
     <div id="error-container" class="hidden text-center p-8">
          <div class="bg-red-900/50 border border-red-700 rounded-lg p-8 max-w-2xl mx-auto">
-            <h2 class="text-3xl font-bold text-red-300">Configuration Error</h2>
-            <p id="errorMessage" class="text-red-300 mt-4">The LekhIkA tool has not been configured by the administrator. Please set up the tool in the <strong>admin.html</strong> panel first.</p>
+            <h2 class="text-3xl font-bold text-red-300">Error</h2>
+            <p id="errorMessage" class="text-red-300 mt-4">An error occurred.</p>
         </div>
     </div>
+
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         let lekhikaConfig;
@@ -86,15 +89,23 @@
         const analyzeBtn = document.getElementById('analyzeBtn');
         const CIRCUMFERENCE = 2 * Math.PI * 40;
         const PARAMETERS_CONFIG = [
-            { id: "readability", name: "Clarity", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>' },
-            { id: "tone", name: "Tone", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' },
-            { id: "engagement", name: "Engagement", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>' },
-            { id: "impact", name: "Impact", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM20.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0014 8v8a1 1 0 001.6.8l5.333-4z" /></svg>' },
-            { id: "cta", name: "Call to Action", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>' },
-            { id: "confidence", name: "Confidence", icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>' }
+            { id: "readability", name: "Clarity" }, { id: "tone", name: "Tone" }, { id: "engagement", name: "Engagement" },
+            { id: "impact", name: "Impact" }, { id: "cta", name: "Call to Action" }, { id: "confidence", name: "Confidence" }
         ];
 
+        function showError(message) {
+            document.getElementById('app-container').style.display = 'none';
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('error-container').style.display = 'block';
+        }
+
         async function loadConfigAndInitialize() {
+            // Check if the file is being run locally.
+            if (window.location.protocol === 'file:') {
+                showError("This tool cannot be run directly from a local file. Please use the hosted URL on Vercel to access the application.");
+                return;
+            }
+
             try {
                 const response = await fetch('/api/config');
                 if (!response.ok) {
@@ -102,6 +113,8 @@
                     throw new Error(errorData.error || `Config server error! Status: ${response.status}`);
                 }
                 lekhikaConfig = await response.json();
+
+                // If config loads, show the app and set it up
                 document.getElementById('app-container').style.display = 'block';
                 document.getElementById('mainTitle').textContent = lekhikaConfig.ui.mainTitle;
                 document.getElementById('styledName').textContent = lekhikaConfig.ui.styledName;
@@ -110,14 +123,15 @@
                 document.querySelector('body::before').style.backgroundImage = `url('${lekhikaConfig.ui.logoUrl}')`;
                 initializeParametersUI();
                 analyzeBtn.addEventListener('click', handleAnalysis);
+                // Mobile menu logic
                 const btn = document.getElementById('menuBtn'), menu = document.getElementById('mobileMenu');
                 if (btn && menu) { btn.addEventListener('click', () => { const isHidden = menu.classList.contains('hidden'); if (isHidden) { menu.classList.remove('hidden'); requestAnimationFrame(() => { menu.classList.remove('-translate-y-full'); menu.classList.add('translate-y-0'); }); } else { menu.classList.remove('translate-y-0'); menu.classList.add('-translate-y-full'); menu.addEventListener('transitionend', () => { menu.classList.add('hidden'); }, { once: true }); } }); }
             } catch (error) {
                 console.error("Failed to load configuration:", error);
-                document.getElementById('errorMessage').textContent = `Error: ${error.message}`;
-                document.getElementById('error-container').style.display = 'block';
+                showError(`Failed to load configuration: ${error.message}`);
             }
         }
+
         async function handleAnalysis() {
             const text = copyInput.value;
             if (!text.trim()) { alert('Please enter some text to analyze.'); return; }
@@ -143,19 +157,22 @@
                 analyzeBtn.textContent = 'Unleash AI Analysis';
             }
         }
+
         async function attemptAnalysis(text, provider) {
             const response = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, provider }) });
             if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.error || `Analysis failed for ${provider}.`); }
             return await response.json();
         }
+
         function updateUIWithAnalysis(analysis) { updateOverallScoreUI(analysis.overallScore); updateScoreFeedback(analysis.overallScore, analysis.feedbackMessage); updateAllParameters(analysis.parameters); displaySuggestions(analysis.suggestions); }
         function resetUIForAnalysis() { analyzeBtn.disabled = true; analyzeBtn.textContent = 'Consulting the AI...'; scoreFeedback.textContent = `LekhIkA is consulting the digital spirits...`; suggestionsContainer.innerHTML = `<p class="text-slate-400 italic text-center py-4">Analyzing...</p>`; PARAMETERS_CONFIG.forEach(p => updateParameterUI(p.id, 0)); }
-        function initializeParametersUI() { parametersContainer.innerHTML = ''; PARAMETERS_CONFIG.forEach((param, index) => { const paramElement = `<div class="parameter-card bg-slate-700 p-2.5 sm:p-3 md:p-4 rounded-lg sm:rounded-xl shadow-md border border-slate-600/80" style="animation: popInAdvanced 0.6s ease-out ${index * 100 + 200}ms forwards; opacity:0; transform: perspective(500px) translateZ(-30px) translateY(15px);"><div class="flex items-center justify-between mb-1.5 sm:mb-2"><div class="flex items-center space-x-1.5 sm:space-x-2"><span class="text-[var(--premium-accent)]">${param.icon || ''}</span><h4 class="text-xs sm:text-sm font-semibold text-slate-200">${param.name}</h4></div><span id="${param.id}ScoreText" class="text-[10px] sm:text-xs font-bold text-[var(--premium-accent)] bg-[var(--premium-accent-dark)]/30 px-1.5 sm:px-2 py-0.5 rounded-full">0/10</span></div><div class="parameter-bar-bg w-full h-2 sm:h-2.5 md:h-3 rounded-full overflow-hidden"><div id="${param.id}Bar" class="parameter-bar-fg h-2 sm:h-2.5 md:h-3 rounded-full"></div></div></div>`; parametersContainer.insertAdjacentHTML('beforeend', paramElement); }); }
-        function updateOverallScoreUI(s) { let cs = parseInt(scoreText.textContent) || 0; const ts = Math.round(s); const dur = 1200, st = 20, tSteps = dur / st; let inc = (ts - cs) / tSteps; let stepC = 0; function animS() { if (stepC >= tSteps) { scoreText.textContent = ts; const off = CIRCUMFERENCE - (ts / 100) * CIRCUMFERENCE; scoreCircleFg.style.strokeDashoffset = Math.max(0, Math.min(CIRCUMFERENCE, off)); return; } cs += inc; scoreText.textContent = Math.round(cs); stepC++; requestAnimationFrame(animS); } if (ts !== (parseInt(scoreText.textContent) || 0)) { animS(); } const offset = CIRCUMFERENCE - (ts / 100) * CIRCUMFERENCE; scoreCircleFg.style.strokeDashoffset = offset; if (ts > 75) { scoreText.classList.add('glowing-score-text'); scoreCircleFg.classList.add('glowing-circle'); } else { scoreText.classList.remove('glowing-score-text'); scoreCircleFg.classList.remove('glowing-circle'); } }
+        function initializeParametersUI() { parametersContainer.innerHTML = ''; PARAMETERS_CONFIG.forEach((param, index) => { const paramElement = `<div class="parameter-card bg-slate-700 p-2.5 sm:p-3 md:p-4 rounded-lg sm:rounded-xl shadow-md border border-slate-600/80"><div class="flex items-center justify-between mb-1.5 sm:mb-2"><div class="flex items-center space-x-1.5 sm:space-x-2"><h4 class="text-xs sm:text-sm font-semibold text-slate-200">${param.name}</h4></div><span id="${param.id}ScoreText" class="text-[10px] sm:text-xs font-bold text-[var(--premium-accent)] bg-[var(--premium-accent-dark)]/30 px-1.5 sm:px-2 py-0.5 rounded-full">0/10</span></div><div class="parameter-bar-bg w-full h-2 sm:h-2.5 md:h-3 rounded-full overflow-hidden"><div id="${param.id}Bar" class="parameter-bar-fg h-2 sm:h-2.5 md:h-3 rounded-full"></div></div></div>`; parametersContainer.insertAdjacentHTML('beforeend', paramElement); }); }
+        function updateOverallScoreUI(s) { let cs = parseInt(scoreText.textContent) || 0; const ts = Math.round(s); const dur = 1200, st = 20, tSteps = dur / st; let inc = (ts - cs) / tSteps; let stepC = 0; function animS() { if (stepC >= tSteps) { scoreText.textContent = ts; const off = CIRCUMFERENCE - (ts / 100) * CIRCUMFERENCE; scoreCircleFg.style.strokeDashoffset = Math.max(0, Math.min(CIRCUMFERENCE, off)); return; } cs += inc; scoreText.textContent = Math.round(cs); stepC++; requestAnimationFrame(animS); } if (ts !== (parseInt(scoreText.textContent) || 0)) { animS(); } const offset = CIRCUMFERENCE - (ts / 100) * CIRCUMFERENCE; scoreCircleFg.style.strokeDashoffset = offset; if (ts > 75) { scoreText.classList.add('glowing-score-text'); scoreCircleFg.classList.add('glowing-circle'); } else { scoreText.classList.remove('g glowing-score-text'); scoreCircleFg.classList.remove('glowing-circle'); } }
         function updateParameterUI(pId, s) { const barEl = document.getElementById(`${pId}Bar`); const txtEl = document.getElementById(`${pId}ScoreText`); if (barEl && txtEl) { const perc = Math.min(100, Math.max(0, s * 10)); barEl.style.width = `${perc}%`; txtEl.textContent = `${Math.round(s)}/10`; if (perc < 40) barEl.style.backgroundColor = '#ef4444'; else if (perc < 75) barEl.style.backgroundColor = '#f59e0b'; else barEl.style.backgroundColor = '#22c55e'; } }
         function updateAllParameters(params) { for (const key in params) { if (Object.hasOwnProperty.call(params, key)) { updateParameterUI(key.toLowerCase(), params[key]); } } }
-        function displaySuggestions(suggs) { suggestionsContainer.innerHTML = ''; if (!suggs || suggs.length === 0) { suggestionsContainer.innerHTML = '<p class="text-slate-400 italic text-center py-3 sm:py-4 text-xs sm:text-sm">LekhIkA finds your copy quite polished! No specific suggestions at this time.</p>'; return; } suggs.forEach((s, i) => { let icon = '', iconCC = 'text-[var(--premium-accent)]', typeC = ''; if (s.type === "improvement") { icon = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'; iconCC = 'text-amber-400'; typeC = 'improvement-type'; } else if (s.type === "tip") { icon = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 14v-2m0-6H9.663a2.649 2.649 0 00-2.563 2.163 2.649 2.649 0 00-.09 1.837M12 12h2.337c1.437 0 2.618-1.188 2.528-2.625-.09-.1441-.09-1.837 0-1.837A2.649 2.649 0 0014.337 6H12" /></svg>'; iconCC = 'text-sky-400'; typeC = 'tip-type'; } else { icon = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'; iconCC = 'text-green-400'; typeC = 'info-type'; } const suggEl = `<div class="suggestion-item ${typeC} flex items-start p-2.5 sm:p-3 rounded-lg shadow-sm" style="animation-delay: ${i * 70}ms"><span class="${iconCC} mr-2 sm:mr-2.5 mt-0.5">${icon}</span><p class="text-[11px] sm:text-xs md:text-sm text-slate-300">${s.text}</p></div>`; suggestionsContainer.insertAdjacentHTML('beforeend', suggEl); }); }
+        function displaySuggestions(suggs) { suggestionsContainer.innerHTML = ''; if (!suggs || suggs.length === 0) { suggestionsContainer.innerHTML = '<p class="text-slate-400 italic text-center py-3 sm:py-4 text-xs sm:text-sm">LekhIkA finds your copy quite polished! No specific suggestions at this time.</p>'; return; } suggs.forEach((s, i) => { let typeC = ''; if (s.type === "improvement") { typeC = 'improvement-type'; } else if (s.type === "tip") { typeC = 'tip-type'; } else { typeC = 'info-type'; } const suggEl = `<div class="suggestion-item ${typeC} p-2.5 sm:p-3 rounded-lg shadow-sm"><p class="text-[11px] sm:text-xs md:text-sm text-slate-300">${s.text}</p></div>`; suggestionsContainer.insertAdjacentHTML('beforeend', suggEl); }); }
         function updateScoreFeedback(s, message) { let tcc = "text-slate-400"; if (s < 40) tcc = "text-red-400"; else if (s < 75) tcc = "text-amber-400"; else tcc = "text-lime-400"; if (s > 89) tcc = "text-[var(--premium-accent)] font-semibold"; scoreFeedback.textContent = message; scoreFeedback.className = `text-xs sm:text-sm ${tcc} mt-2 sm:mt-3 text-center min-h-[18px] sm:min-h-[20px] px-1 sm:px-2 transition-all duration-300`; scoreFeedback.classList.remove('animate-pulse-feedback'); setTimeout(() => scoreFeedback.classList.add('animate-pulse-feedback'), 50); }
+        
         loadConfigAndInitialize();
     });
     </script>
