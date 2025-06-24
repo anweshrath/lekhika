@@ -6,7 +6,25 @@
     <title>LekhIkA Super Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>body{font-family:'Inter',sans-serif;background-color:#0f172a;color:#e2e8f0}.card{background-color:#1e293b;border:1px solid #334155}.label{color:#94a3b8}.input,.textarea,.select{background-color:#334155;border:1px solid #475569;color:#e2e8f0;transition:all .2s ease-in-out}.input:focus,.textarea:focus,.select:focus{background-color:#475569;border-color:#4f46e5;box-shadow:0 0 0 2px rgba(79,70,229,.5);outline:none}.btn-primary{background-color:#4f46e5;transition:background-color .2s}.btn-primary:hover{background-color:#6366f1}.btn-secondary{background-color:#334155;transition:background-color .2s}.btn-secondary:hover{background-color:#475569}.btn-tertiary{background-color:#374151;border:1px solid #4b5563;transition:background-color .2s}.btn-tertiary:hover{background-color:#4b5563}.btn-tertiary:disabled{background-color:#1f2937;color:#6b7280;cursor:not-allowed}.btn-danger{background-color:#991b1b;transition:background-color .2s}.btn-danger:hover{background-color:#b91c1c}#login-overlay,#confirm-overlay{backdrop-filter:blur(10px)}.tab{border-color:transparent}.tab.active{border-color:#4f46e5;background-color:#334155}</style>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .card { background-color: #1e293b; border: 1px solid #334155; }
+        .label { color: #94a3b8; }
+        .input, .textarea, .select { background-color: #334155; border: 1px solid #475569; color: #e2e8f0; transition: all .2s ease-in-out; }
+        .input:focus, .textarea:focus, .select:focus { background-color: #475569; border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79,70,229,.5); outline: none; }
+        .btn-primary { background-color: #4f46e5; transition: background-color .2s; }
+        .btn-primary:hover { background-color: #6366f1; }
+        .btn-secondary { background-color: #334155; transition: background-color .2s; }
+        .btn-secondary:hover { background-color: #475569; }
+        .btn-tertiary { background-color: #374151; border: 1px solid #4b5563; transition: background-color .2s; }
+        .btn-tertiary:hover { background-color: #4b5563; }
+        .btn-tertiary:disabled { background-color: #1f2937; color: #6b7280; cursor: not-allowed; }
+        .btn-danger { background-color: #991b1b; transition: background-color .2s; }
+        .btn-danger:hover { background-color: #b91c1c; }
+        #login-overlay, #confirm-overlay { backdrop-filter: blur(10px); }
+        .tab { border-color: transparent; }
+        .tab.active { border-color: #4f46e5; background-color: #334155; }
+    </style>
 </head>
 <body class="p-4 sm:p-6 md:p-8">
     <div id="login-overlay" class="fixed inset-0 bg-slate-900/80 flex items-center justify-center z-50">
@@ -34,22 +52,22 @@
         <div class="max-w-5xl mx-auto space-y-8">
             <div class="card p-6 rounded-lg shadow-lg">
                 <h2 class="text-xl font-bold border-b border-slate-600 pb-3 mb-4">Security & Access</h2>
-                 <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
                     <div class="space-y-4">
                         <p class="text-sm text-slate-400">Change the password used to access this admin panel. It is stored in your browser's local storage.</p>
                         <div><label for="currentPassword" class="label block text-sm font-bold mb-1">Current Password</label><input type="password" id="currentPassword" class="input w-full p-2 rounded-md"></div>
-                         <div><label for="newPassword" class="label block text-sm font-bold mb-1">New Password</label><input type="password" id="newPassword" class="input w-full p-2 rounded-md"></div>
-                         <div><label for="confirmNewPassword" class="label block text-sm font-bold mb-1">Confirm New Password</label><input type="password" id="confirmNewPassword" class="input w-full p-2 rounded-md"></div>
+                        <div><label for="newPassword" class="label block text-sm font-bold mb-1">New Password</label><input type="password" id="newPassword" class="input w-full p-2 rounded-md"></div>
+                        <div><label for="confirmNewPassword" class="label block text-sm font-bold mb-1">Confirm New Password</label><input type="password" id="confirmNewPassword" class="input w-full p-2 rounded-md"></div>
                         <button id="changePasswordBtn" class="btn-secondary text-white font-semibold py-2 px-4 rounded-md text-sm">Change Password</button>
                         <p id="passwordChangeStatus" class="text-sm h-5 mt-1"></p>
                     </div>
-                     <div>
+                    <div>
                         <p class="text-sm text-slate-400 mb-3">This key is required to authorize saving settings to the server.</p>
                         <label for="adminSecretKey" class="label block text-sm font-bold mb-1">Admin Secret Key</label>
                         <input type="password" id="adminSecretKey" class="input w-full p-2 rounded-md">
                         <p class="text-xs text-slate-500 mt-1">Must match the `ADMIN_SECRET_KEY` variable in your Vercel Environment Variables.</p>
                     </div>
-                 </div>
+                </div>
             </div>
             <div class="card p-6 rounded-lg shadow-lg">
                 <h2 class="text-xl font-bold border-b border-slate-600 pb-3 mb-4">API & Model Configuration</h2>
@@ -62,7 +80,7 @@
                     <div>
                         <label for="openAiKey" class="label block text-sm font-bold mb-1">OpenAI API Key</label>
                         <div class="flex items-center gap-2"><input type="password" id="openAiKey" class="input w-full p-2 rounded-md" placeholder="Enter OpenAI Key"><button id="testOpenAiBtn" class="btn-tertiary text-white font-semibold py-2 px-4 rounded-md text-sm whitespace-nowrap">Test</button></div>
-                         <p id="openAiKeyStatus" class="text-sm h-5 mt-1 ml-1"></p>
+                        <p id="openAiKeyStatus" class="text-sm h-5 mt-1 ml-1"></p>
                     </div>
                 </div>
                 <div class="grid md:grid-cols-2 gap-6 mt-4 border-t border-slate-700 pt-6">
@@ -70,21 +88,21 @@
                         <label for="primaryModelProvider" class="label block text-sm font-bold mb-1">Primary AI Provider</label>
                         <select id="primaryModelProvider" class="select w-full p-2 rounded-md"><option value="gemini">Gemini</option><option value="openai">OpenAI</option></select>
                     </div>
-                     <div>
+                    <div>
                         <label for="fallbackModelProvider" class="label block text-sm font-bold mb-1">Fallback AI Provider</label>
                         <select id="fallbackModelProvider" class="select w-full p-2 rounded-md"><option value="openai">OpenAI</option><option value="gemini">Gemini</option></select>
-                         <p class="text-xs text-slate-500 mt-1">If the primary model fails, the fallback will be used.</p>
+                        <p class="text-xs text-slate-500 mt-1">If the primary model fails, the fallback will be used.</p>
                     </div>
                     <div>
-                         <label for="geminiModelVersion" class="label block text-sm font-bold mb-1">Gemini Model Version</label>
+                        <label for="geminiModelVersion" class="label block text-sm font-bold mb-1">Gemini Model Version</label>
                         <select id="geminiModelVersion" class="select w-full p-2 rounded-md">
                             <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash (Fast & Cheap)</option>
                             <option value="gemini-1.5-pro-latest">Gemini 1.5 Pro (Advanced)</option>
                             <option value="gemini-1.0-pro">Gemini 1.0 Pro</option>
                         </select>
                     </div>
-                     <div>
-                         <label for="openAiModelVersion" class="label block text-sm font-bold mb-1">OpenAI Model Version</label>
+                    <div>
+                        <label for="openAiModelVersion" class="label block text-sm font-bold mb-1">OpenAI Model Version</label>
                         <select id="openAiModelVersion" class="select w-full p-2 rounded-md">
                             <option value="gpt-4o">GPT-4o (Latest & Greatest)</option>
                             <option value="gpt-4-turbo">GPT-4 Turbo</option>
@@ -102,19 +120,19 @@
                     </nav>
                 </div>
                 <div id="gemini-prompt-content">
-                     <p class="text-sm text-slate-400 mb-3">Instructions for the Gemini model.</p>
+                    <p class="text-sm text-slate-400 mb-3">Instructions for the Gemini model.</p>
                     <textarea id="geminiSystemPrompt" rows="15" class="textarea w-full p-3 rounded-md text-sm leading-relaxed"></textarea>
                 </div>
                 <div id="openai-prompt-content" class="hidden">
-                     <p class="text-sm text-slate-400 mb-3">Instructions for the OpenAI model. Often, being more direct with OpenAI helps.</p>
+                    <p class="text-sm text-slate-400 mb-3">Instructions for the OpenAI model. Often, being more direct with OpenAI helps.</p>
                     <textarea id="openAiSystemPrompt" rows="15" class="textarea w-full p-3 rounded-md text-sm leading-relaxed"></textarea>
                 </div>
             </div>
             <div class="card p-6 rounded-lg shadow-lg">
                 <h2 class="text-xl font-bold border-b border-slate-600 pb-3 mb-4">UI Customization</h2>
                 <div class="space-y-4">
-                     <div><label for="mainTitle" class="label block text-sm font-bold mb-1">Main Title</label><input type="text" id="mainTitle" class="input w-full p-2 rounded-md"><p class="text-xs text-slate-500 mt-1">Text before the styled name.</p></div>
-                     <div><label for="styledName" class="label block text-sm font-bold mb-1">Styled Name</label><input type="text" id="styledName" class="input w-full p-2 rounded-md"></div>
+                    <div><label for="mainTitle" class="label block text-sm font-bold mb-1">Main Title</label><input type="text" id="mainTitle" class="input w-full p-2 rounded-md"><p class="text-xs text-slate-500 mt-1">Text before the styled name.</p></div>
+                    <div><label for="styledName" class="label block text-sm font-bold mb-1">Styled Name</label><input type="text" id="styledName" class="input w-full p-2 rounded-md"></div>
                     <div><label for="subtitle" class="label block text-sm font-bold mb-1">Subtitle</label><input type="text" id="subtitle" class="input w-full p-2 rounded-md"></div>
                     <div><label for="logoUrl" class="label block text-sm font-bold mb-1">LekhIkA Avatar Image URL</label><input type="text" id="logoUrl" class="input w-full p-2 rounded-md"></div>
                 </div>
@@ -189,61 +207,144 @@
         };
 
         function getStoredPassword() { return localStorage.getItem(PASSWORD_KEY) || DEFAULT_PASSWORD; }
-        function handleLogin() { if (passwordInput.value === getStoredPassword()) { loginOverlay.style.display = 'none'; adminContent.style.display = 'block'; loadSettings(); } else { loginError.textContent = 'Incorrect password.'; passwordInput.value = ''; } }
+        function handleLogin() {
+            if (passwordInput.value === getStoredPassword()) {
+                loginOverlay.style.display = 'none';
+                adminContent.style.display = 'block';
+                loadSettings();
+            } else {
+                loginError.textContent = 'Incorrect password.';
+                passwordInput.value = '';
+            }
+        }
         
         function populateForm(config) {
+            console.log("[Admin UI] Populating form with config:", config);
             for (const key in allFields) {
-                if(key === 'adminSecretKey') continue;
+                if(key === 'adminSecretKey') continue; // Admin secret key is not populated from server for security
                 const parts = key.split(/(?=[A-Z])/);
                 let value;
-                if (key.includes('SystemPrompt')) { value = config.prompting[key]; }
-                else if (key.includes('Key')) { value = config.api[key]; }
-                else if (key.includes('Model')) { value = config.model[key]; }
-                else { value = config.ui[key]; }
-                allFields[key].value = value || '';
+                if (key.includes('SystemPrompt')) { value = config.prompting ? config.prompting[key] : ''; }
+                else if (key.includes('Key')) { value = config.api ? config.api[key] : ''; } // API keys are NOT returned from server
+                else if (key.includes('Model')) { value = config.model ? config.model[key] : ''; }
+                else { value = config.ui ? config.ui[key] : ''; }
+                
+                // Ensure value is not undefined before assigning, use default empty string
+                allFields[key].value = value || ''; 
             }
         }
 
         async function loadSettings() {
-             console.log("Loading initial settings from server to populate form...");
-             try {
+            console.log("[Admin UI] Attempting to load initial settings from server...");
+            // Added check: If running from a local file, warn user and skip API calls
+            if (!window.location.protocol.startsWith('http')) {
+                console.warn("[Admin UI WARNING] Running admin.html from a local file. Server API calls (save/load) will not work.");
+                saveStatus.style.color = '#f87171';
+                saveStatus.textContent = "Warning: Running from local file. Save/Load to server won't work. Please deploy to Vercel or run locally with 'vercel dev'.";
+                setTimeout(() => saveStatus.textContent = '', 10000); // Keep message longer
+                populateForm(defaultConfig); // Populate with defaults for local interaction
+                return; // Exit function early
+            }
+
+            try {
                 const response = await fetch('/api/config');
                 let configToLoad = defaultConfig;
                 if(response.ok) {
                     const serverConfig = await response.json();
+                    console.log("[Admin UI] Server returned config (ok):", serverConfig);
                     // Merge server config with default to ensure all keys exist
                     configToLoad = {
-                        model: {...defaultConfig.model, ...serverConfig.model},
-                        ui: {...defaultConfig.ui, ...serverConfig.ui},
-                        prompting: {...defaultConfig.prompting, ...serverConfig.prompting},
-                        api: defaultConfig.api // API keys are not sent from server
-                    }
+                        model: {...defaultConfig.model, ...(serverConfig.model || {})},
+                        ui: {...defaultConfig.ui, ...(serverConfig.ui || {})},
+                        prompting: {...defaultConfig.prompting, ...(serverConfig.prompting || {})},
+                        api: defaultConfig.api // API keys are not sent from server, so keep defaults
+                    };
                 } else {
-                    console.warn("No remote config found, populating with defaults.");
+                    const errorData = await response.json();
+                    console.warn(`[Admin UI WARNING] No remote config found or server error (${response.status}):`, errorData.error);
+                    saveStatus.style.color = '#f87171';
+                    saveStatus.textContent = `Error loading config: ${errorData.error || 'Unknown error'}. Using defaults.`;
+                    setTimeout(() => saveStatus.textContent = '', 7000);
+                    // Still use defaultConfig merged, so fields aren't completely blank
+                    configToLoad = {
+                        model: {...defaultConfig.model},
+                        ui: {...defaultConfig.ui},
+                        prompting: {...defaultConfig.prompting},
+                        api: defaultConfig.api
+                    };
                 }
                 populateForm(configToLoad);
-             } catch(err) {
-                 console.error("Error loading remote config, populating with defaults:", err);
-                 populateForm(defaultConfig);
-             }
+            } catch(err) {
+                console.error("[Admin UI ERROR] Error loading remote config, populating with defaults:", err);
+                saveStatus.style.color = '#f87171';
+                saveStatus.textContent = `Network Error loading config: ${err.message}. Using defaults.`;
+                setTimeout(() => saveStatus.textContent = '', 7000);
+                populateForm(defaultConfig); // Fallback to hardcoded defaults on network error
+            }
         }
         
         async function saveSettings() {
+            // Added check: If running from a local file, warn user and skip API calls
+            if (!window.location.protocol.startsWith('http')) {
+                console.warn("[Admin UI WARNING] Running admin.html from a local file. Save operation to server will not work.");
+                saveStatus.style.color = '#f87171';
+                saveStatus.textContent = "Warning: Running from local file. Save will not persist. Deploy to Vercel or run locally with 'vercel dev'.";
+                setTimeout(() => saveStatus.textContent = '', 10000); // Keep message longer
+                return; // Exit function early
+            }
+
+
             const secretKey = allFields.adminSecretKey.value;
-            if (!secretKey) { alert("The Admin Secret Key is required to save settings."); return; }
-            saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; saveStatus.textContent = '';
+            if (!secretKey) {
+                saveStatus.style.color = '#f87171';
+                saveStatus.textContent = "Error: The Admin Secret Key is required to save settings.";
+                setTimeout(() => saveStatus.textContent = '', 5000);
+                return;
+            }
+
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+            saveStatus.textContent = ''; // Clear previous status
+
             const currentConfig = {
                 api: { geminiKey: allFields.geminiKey.value, openAiKey: allFields.openAiKey.value },
                 model: { primaryProvider: allFields.primaryModelProvider.value, fallbackProvider: allFields.fallbackModelProvider.value, geminiModelVersion: allFields.geminiModelVersion.value, openAiModelVersion: allFields.openAiModelVersion.value },
                 prompting: { geminiSystemPrompt: allFields.geminiSystemPrompt.value, openAiSystemPrompt: allFields.openAiSystemPrompt.value },
                 ui: { mainTitle: allFields.mainTitle.value, styledName: allFields.styledName.value, subtitle: allFields.subtitle.value, logoUrl: allFields.logoUrl.value }
             };
+            console.log("[Admin UI] Attempting to send config to server:", JSON.stringify(currentConfig, null, 2));
+
             try {
-                const response = await fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${secretKey}` }, body: JSON.stringify(currentConfig) });
-                if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.error || `HTTP error! Status: ${response.status}`); }
-                saveStatus.style.color = '#4ade80'; saveStatus.textContent = 'Settings saved successfully to remote server!';
-            } catch (error) { console.error("Failed to save settings:", error); saveStatus.style.color = '#f87171'; saveStatus.textContent = `Error: ${error.message}`; }
-            finally { saveBtn.disabled = false; saveBtn.textContent = 'Save All Settings'; setTimeout(() => saveStatus.textContent = '', 5000); }
+                const response = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${secretKey}`
+                    },
+                    body: JSON.stringify(currentConfig)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("[Admin UI ERROR] Server responded with error on save:", errorData);
+                    throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+                }
+                saveStatus.style.color = '#4ade80';
+                saveStatus.textContent = 'Settings saved successfully to remote server!';
+                console.log("[Admin UI SUCCESS] Settings save API call successful.");
+
+            } catch (error) {
+                console.error("[Admin UI ERROR] Failed to save settings:", error);
+                saveStatus.style.color = '#f87171';
+                saveStatus.textContent = `Error: ${error.message}`;
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save All Settings';
+                setTimeout(() => saveStatus.textContent = '', 5000); // Clear message after 5 seconds
+                // IMPORTANT: Re-load settings from server after save attempt to verify persistence
+                // This will trigger a GET request to see if the saved data is there.
+                loadSettings(); 
+            }
         }
         function changePassword() {
             const currentPass = currentPasswordEl.value, newPass = newPasswordEl.value, confirmPass = confirmNewPasswordEl.value;
@@ -281,9 +382,37 @@
             reader.readAsText(file); importFile.value = '';
         }
         function showConfirmation(title, text, action) { confirmTitle.textContent = title; confirmText.textContent = text; confirmAction = action; confirmOverlay.classList.remove('hidden'); }
-        async function resetToDefaults() { showConfirmation('Reset All Settings?', 'This will erase all your settings on the server. This cannot be undone.', async () => { try { await saveSettings(defaultConfig); loadSettings(defaultConfig); alert("Settings have been reset to default on the server."); } catch(err) { alert("Failed to reset settings on server."); } }); }
+        async function resetToDefaults() {
+            showConfirmation('Reset All Settings?', 'This will erase all your settings on the server. This cannot be undone.', async () => {
+                try {
+                    // Create a dummy save request with empty data
+                    const secretKey = allFields.adminSecretKey.value;
+                    if (!secretKey) {
+                        alert("Admin Secret Key is required to reset settings.");
+                        return;
+                    }
+                    const response = await fetch('/api/config', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${secretKey}` },
+                        body: JSON.stringify(defaultConfig) // Send default config to effectively "reset"
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+                    }
+                    console.log("[Admin UI] Reset to defaults via API successful.");
+                    loadSettings(); // Reload to reflect defaults
+                    alert("Settings have been reset to default on the server.");
+                } catch(err) {
+                    console.error("[Admin UI ERROR] Failed to reset settings on server:", err);
+                    alert(`Failed to reset settings on server: ${err.message}.`);
+                }
+            });
+        }
         async function testGeminiKey() { const apiKey=allFields.geminiKey.value;if(!apiKey){geminiKeyStatus.textContent='❌ Key cannot be empty.';geminiKeyStatus.style.color='#f87171';return;}testGeminiBtn.disabled=true;testGeminiBtn.textContent='Testing...';geminiKeyStatus.textContent='Validating...';geminiKeyStatus.style.color='#60a5fa';const url=`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;try{const response=await fetch(url);if(response.ok){geminiKeyStatus.textContent='✔️ Valid Key';geminiKeyStatus.style.color='#4ade80';}else{geminiKeyStatus.textContent=`❌ Invalid Key (Status: ${response.status})`;geminiKeyStatus.style.color='#f87171';}}catch(error){console.error("Gemini Test Error:",error);geminiKeyStatus.textContent='❌ Network Error';geminiKeyStatus.style.color='#f87171';}finally{testGeminiBtn.disabled=false;testGeminiBtn.textContent='Test';}}
-        async function testOpenAiKey() { const apiKey=allFields.openAiKey.value;if(!apiKey){openAiKeyStatus.textContent='❌ Key cannot be empty.';openAiKeyStatus.style.color='#f87171';return;}testOpenAiBtn.disabled=true;testOpenAiBtn.textContent='Testing...';openAiKeyStatus.textContent='Validating...';openAiKeyStatus.style.color='#60a5fa';const url='https://api.openai.com/v1/models';const headers={'Authorization':`Bearer ${apiKey}`};try{const response=await fetch(url,{headers});if(response.ok){openAiKeyStatus.textContent='✔️ Valid Key';openAiKeyStatus.style.color='#4ade80';}else{openAiKeyStatus.textContent=`❌ Invalid Key (Status: ${response.status})`;openAiKeyStatus.style.color='#f87171';}}catch(error){console.error("OpenAI Test Error:",error);openAiKeyStatus.textContent='❌ Network Error';openAiKeyStatus.style.color='#f87171';}finally{testOpenAiBtn.disabled=false;testOpenAiBtn.textContent='Test';}}
+        async function testOpenAiKey() { const apiKey=allFields.openAiKey.value;if(!apiKey){openAiKeyStatus.textContent='❌ Key cannot be empty.';openAiKeyStatus.style.color='#f87171';return;}testOpenAiBtn.disabled=true;testOpenAiBtn.textContent='Testing...';openAiKeyStatus.textContent='Validating...';openAiKeyStatus.style.color='#60a5fa';const url='https://api.openai.com/v1/models';const headers={'Authorization':`Bearer ${apiKey}`};try{const response=await fetch(url,{headers});if(response.ok){openAiKeyStatus.textContent='✔️ Valid Key';geminiKeyStatus.style.color='#4ade80';}else{openAiKeyStatus.textContent=`❌ Invalid Key (Status: ${response.status})`;openAiKeyStatus.style.color='#f87171';}}catch(error){console.error("OpenAI Test Error:",error);openAiKeyStatus.textContent='❌ Network Error';openAiKeyStatus.style.color='#f87171';}finally{testOpenAiBtn.disabled=false;testOpenAiBtn.textContent='Test';}}
+        
+        // Event Listeners
         loginBtn.addEventListener('click', handleLogin);
         passwordInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') handleLogin(); });
         saveBtn.addEventListener('click', saveSettings);
@@ -297,6 +426,10 @@
         resetSettingsBtn.addEventListener('click', resetToDefaults);
         confirmCancel.addEventListener('click', () => { confirmOverlay.classList.add('hidden'); confirmAction = null; });
         confirmProceed.addEventListener('click', () => { if(confirmAction) confirmAction(); confirmOverlay.classList.add('hidden'); confirmAction = null; });
+
+        // Initial load of settings on admin panel access
+        // It's important to call this AFTER all event listeners are set up
+        loadSettings(); 
     });
     </script>
 </body>
