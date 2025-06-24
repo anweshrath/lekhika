@@ -1,8 +1,8 @@
-import { kv } from '@vercel/kv';
+const { kv } = require('@vercel/kv');
 
 const CONFIG_KEY = 'lekhikaAppConfig';
 
-export default async function handler(request, response) {
+module.exports = async function handler(request, response) {
   // --- Handle POST request (from admin panel to save config) ---
   if (request.method === 'POST') {
     const adminSecret = process.env.ADMIN_SECRET_KEY;
@@ -31,8 +31,6 @@ export default async function handler(request, response) {
         return response.status(404).json({ error: 'Configuration not found. Please save settings in the admin panel.' });
       }
 
-      // IMPORTANT: Sanitize the config before sending to the client.
-      // We NEVER send the secret API keys to the user's browser.
       const sanitizedConfig = {
         model: fullConfig.model,
         ui: fullConfig.ui,
@@ -46,7 +44,6 @@ export default async function handler(request, response) {
     }
   }
 
-  // Handle other methods
   response.setHeader('Allow', ['GET', 'POST']);
   response.status(405).end(`Method ${request.method} Not Allowed`);
 }
