@@ -221,13 +221,17 @@
         function populateForm(config) {
             console.log("[Admin UI] Populating form with config:", config);
             for (const key in allFields) {
-                if(key === 'adminSecretKey') continue; // Admin secret key is not populated from server for security
+                // IMPORTANT: DO NOT overwrite API key fields or adminSecretKey from server response.
+                // These are sensitive and not returned by the server. They should persist only user input.
+                if (key === 'geminiKey' || key === 'openAiKey' || key === 'adminSecretKey') {
+                    continue; 
+                }
+
                 const parts = key.split(/(?=[A-Z])/);
                 let value;
-                if (key.includes('SystemPrompt')) { value = config.prompting ? config.prompting[key] : ''; }
-                else if (key.includes('Key')) { value = config.api ? config.api[key] : ''; } // API keys are NOT returned from server
-                else if (key.includes('Model')) { value = config.model ? config.model[key] : ''; }
-                else { value = config.ui ? config.ui[key] : ''; }
+                if (config.prompting && key.includes('SystemPrompt')) { value = config.prompting[key]; }
+                else if (config.model && key.includes('Model')) { value = config.model[key]; }
+                else if (config.ui) { value = config.ui[key]; }
                 
                 // Ensure value is not undefined before assigning, use default empty string
                 allFields[key].value = value || ''; 
@@ -257,7 +261,7 @@
                         model: {...defaultConfig.model, ...(serverConfig.model || {})},
                         ui: {...defaultConfig.ui, ...(serverConfig.ui || {})},
                         prompting: {...defaultConfig.prompting, ...(serverConfig.prompting || {})},
-                        api: defaultConfig.api // API keys are not sent from server, so keep defaults
+                        api: defaultConfig.api // API keys are not sent from server, so keep defaults as empty for security
                     };
                 } else {
                     const errorData = await response.json();
@@ -270,7 +274,7 @@
                         model: {...defaultConfig.model},
                         ui: {...defaultConfig.ui},
                         prompting: {...defaultConfig.prompting},
-                        api: defaultConfig.api
+                        api: defaultConfig.api // API keys remain empty
                     };
                 }
                 populateForm(configToLoad);
@@ -343,6 +347,7 @@
                 setTimeout(() => saveStatus.textContent = '', 5000); // Clear message after 5 seconds
                 // IMPORTANT: Re-load settings from server after save attempt to verify persistence
                 // This will trigger a GET request to see if the saved data is there.
+                // However, populateForm now explicitly skips API keys, so they'll stay visible.
                 loadSettings(); 
             }
         }
@@ -374,7 +379,20 @@
                 try {
                     const importedConfig = JSON.parse(event.target.result);
                     if (importedConfig.api && importedConfig.prompting && importedConfig.ui) {
-                        populateForm(importedConfig);
+                        // Directly set values from imported config, including API keys for one-time import
+                        allFields.geminiKey.value = importedConfig.api.geminiKey || '';
+                        allFields.openAiKey.value = importedConfig.api.openAiKey || '';
+                        allFields.primaryModelProvider.value = importedConfig.model.primaryProvider || 'gemini';
+                        allFields.fallbackModelProvider.value = importedConfig.model.fallbackProvider || 'openai';
+                        allFields.geminiModelVersion.value = importedConfig.model.geminiModelVersion || 'gemini-1.5-flash-latest';
+                        allFields.openAiModelVersion.value = importedConfig.model.openAiModelVersion || 'gpt-4o';
+                        allFields.geminiSystemPrompt.value = importedConfig.prompting.geminiSystemPrompt || defaultPrompt;
+                        allFields.openAiSystemPrompt.value = importedConfig.prompting.openAiSystemPrompt || defaultPrompt;
+                        allFields.mainTitle.value = importedConfig.ui.mainTitle || defaultConfig.ui.mainTitle;
+                        allFields.styledName.value = importedConfig.ui.styledName || defaultConfig.ui.styledName;
+                        allFields.subtitle.value = importedConfig.ui.subtitle || defaultConfig.ui.subtitle;
+                        allFields.logoUrl.value = importedConfig.ui.logoUrl || defaultConfig.ui.logoUrl;
+
                         alert("Settings imported successfully! Fill in your secret key and click 'Save All Settings' to apply.");
                     } else { alert("Invalid configuration file."); }
                 } catch (err) { alert("Error parsing file. Make sure it's a valid JSON."); console.error(err); }
