@@ -299,7 +299,7 @@ Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions
                 let configToLoad = defaultConfig;
                 if(response.ok) {
                     const serverConfig = await response.json();
-                    console.log("[Admin UI] Server returned config (ok):", serverConfig); // Log the received config
+                    console.log("[Admin UI] Server returned config (ok):", JSON.stringify(serverConfig, null, 2)); // Log the received config
                     // Merge server config with default to ensure all keys exist
                     configToLoad = {
                         model: {...defaultConfig.model, ...(serverConfig.model || {})},
@@ -496,4 +496,3 @@ Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions
     </script>
 </body>
 </html>
-
