@@ -198,11 +198,51 @@
         const confirmProceed = document.getElementById('confirm-proceed');
         let confirmAction = null;
         const PASSWORD_KEY = 'lekhikaAdminPassword';
-        const defaultPrompt = `You are LekhIkA, an expert AI copy alchemist...`; // Truncated for brevity
+        // Updated default prompts for stricter JSON output
+        const defaultGeminiPrompt = `You are LekhIkA, an expert AI copy alchemist. Your task is to analyze marketing copy provided by the user. Respond ONLY with a JSON object. Do NOT include any conversational text or explanations outside the JSON. The JSON must contain the following keys and structure:
+
+{
+  "overallScore": [number, 0-100],
+  "feedbackMessage": [string, a concise feedback message based on the score],
+  "parameters": {
+    "readability": [number, 0-10],
+    "tone": [number, 0-10],
+    "engagement": [number, 0-10],
+    "impact": [number, 0-10],
+    "cta": [number, 0-10],
+    "confidence": [number, 0-10]
+  },
+  "suggestions": [
+    { "type": "improvement"|"tip"|"info", "text": "concise suggestion" }
+  ]
+}
+
+Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.`;
+
+        const defaultOpenAiPrompt = `You are LekhIkA, an expert AI copy alchemist. Analyze the user's marketing copy. Your response MUST be a valid JSON object ONLY. Do NOT include any introductory or concluding text, or any conversational filler outside the JSON. The JSON should strictly adhere to the following structure:
+
+{
+  "overallScore": [number, 0-100],
+  "feedbackMessage": [string, a concise feedback message based on the score],
+  "parameters": {
+    "readability": [number, 0-10],
+    "tone": [number, 0-10],
+    "engagement": [number, 0-10],
+    "impact": [number, 0-10],
+    "cta": [number, 0-10],
+    "confidence": [number, 0-10]
+  },
+  "suggestions": [
+    { "type": "improvement"|"tip"|"info", "text": "concise suggestion" }
+  ]
+}
+
+Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.`;
+
         const defaultConfig = {
             api: { geminiKey: '', openAiKey: '' },
             model: { primaryProvider: 'gemini', fallbackProvider: 'openai', geminiModelVersion: 'gemini-1.5-flash-latest', openAiModelVersion: 'gpt-4o' },
-            prompting: { geminiSystemPrompt: defaultPrompt, openAiSystemPrompt: defaultPrompt },
+            prompting: { geminiSystemPrompt: defaultGeminiPrompt, openAiSystemPrompt: defaultOpenAiPrompt },
             ui: { mainTitle: "CopyAlchemist's Assistant - ", styledName: "LekhIkA", subtitle: "Your AI partner for crafting compelling, high-conversion copy.", logoUrl: "https://copyalche.my/premium/lekhika-ai-logo-close.png" }
         };
 
@@ -227,11 +267,15 @@
                     continue; 
                 }
 
-                const parts = key.split(/(?=[A-Z])/);
                 let value;
-                if (config.prompting && key.includes('SystemPrompt')) { value = config.prompting[key]; }
-                else if (config.model && key.includes('Model')) { value = config.model[key]; }
-                else if (config.ui) { value = config.ui[key]; }
+                // Directly map keys from config's sub-objects to the allFields elements
+                if (config.prompting && (key === 'geminiSystemPrompt' || key === 'openAiSystemPrompt')) {
+                    value = config.prompting[key];
+                } else if (config.model && (key === 'primaryModelProvider' || key === 'fallbackModelProvider' || key === 'geminiModelVersion' || key === 'openAiModelVersion')) {
+                    value = config.model[key];
+                } else if (config.ui) {
+                    value = config.ui[key];
+                }
                 
                 // Ensure value is not undefined before assigning, use default empty string
                 allFields[key].value = value || ''; 
@@ -383,7 +427,7 @@
                         allFields.geminiKey.value = importedConfig.api.geminiKey || '';
                         allFields.openAiKey.value = importedConfig.api.openAiKey || '';
                         allFields.primaryModelProvider.value = importedConfig.model.primaryProvider || 'gemini';
-                        allFields.fallbackModelProvider.value = importedConfig.model.fallbackProvider || 'openai';
+                        allFields.fallbackModelProvider.value = importedConfig.model.fallbackModelProvider || 'openai';
                         allFields.geminiModelVersion.value = importedConfig.model.geminiModelVersion || 'gemini-1.5-flash-latest';
                         allFields.openAiModelVersion.value = importedConfig.model.openAiModelVersion || 'gpt-4o';
                         allFields.geminiSystemPrompt.value = importedConfig.prompting.geminiSystemPrompt || defaultPrompt;
