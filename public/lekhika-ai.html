@@ -6,8 +6,8 @@
     <title>CopyAlchemist's Assistant - LekhIkA (AI-Powered)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Phosphor Icons: Ensure this script loads correctly for icons to display -->
-    <script async src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js"></script>
+    <!-- Phosphor Icons for a modern look (for hamburger/close icons) -->
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js"></script>
     <style>
         /* Base styling for the main content card */
         #copy-alchemist-lekhika {
@@ -149,12 +149,12 @@
             box-shadow: 0 8px 20px rgba(0, 255, 255, 0.15), 0 4px 10px rgba(0,0,0,0.3);
             transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
             transform: translateY(-100%);
-            display: none; /* Hidden by default for JS toggle */
+            display: none;
             overflow-y: auto; /* Enable scrolling for many menu items */
         }
         #mobileMenu.show {
             transform: translateY(0%);
-            display: flex; /* Show using flex for column layout */
+            display: flex;
         }
         #mobileMenu a {
             display: block;
@@ -234,7 +234,6 @@
             border: 1px solid transparent; /* Default transparent border */
             background-color: rgba(30, 41, 59, 0.6); /* Slightly more transparent */
             padding: 1.25rem; /* More padding */
-            border-radius: 0.75rem; /* More rounded corners for elegance */
         }
         .suggestion-item:hover {
             transform: translateY(-5px) scale(1.02); /* More pronounced lift and slight scale */
@@ -289,7 +288,6 @@
             background: linear-gradient(145deg, rgba(25, 36, 58, 0.7), rgba(40, 51, 70, 0.6));
             backdrop-filter: blur(8px); /* Stronger blur */
             padding: 1.5rem; /* More internal padding */
-            border-radius: 1.5rem; /* More rounded for elegance */
         }
         @keyframes pulseCardBorderGlowPremium {
             from { box-shadow: 0 0 25px rgba(0, 255, 255, 0.2), 0 0 50px rgba(0, 255, 255, 0.15); border-color: rgba(0, 255, 255, 0.3); }
@@ -306,7 +304,6 @@
             font-size: 1.125rem; /* Larger font size */
             line-height: 1.6; /* Improved readability */
             padding: 1rem; /* More padding */
-            border-radius: 0.75rem; /* More rounded */
         }
         #copyInput:focus {
             background-color: rgba(30, 41, 59, 1);
@@ -315,66 +312,37 @@
             color: #f8fafc;
         }
         /* Titles with gradients */
-        .futuristic-title {
-            font-size: 3rem; /* Larger main title */
-            letter-spacing: -0.05em; /* Tighter letter spacing */
-            line-height: 1.1;
-            text-shadow: 0 0 10px rgba(0,255,255,0.2), 0 0 20px rgba(129,140,248,0.1); /* Subtle shadow */
-        }
-        .futuristic-title span {
-            background-image: linear-gradient(to right, var(--premium-accent), #a78bfa, #c084fc, #f472b6); /* Broader gradient */
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-weight: 700; /* Bold LekhIkA name */
-            transition: all 0.3s ease;
-        }
-        .futuristic-title span:hover {
-            transform: scale(1.05); /* Slight scale on hover for name */
-            text-shadow: 0 0 15px rgba(0,255,255,0.5), 0 0 30px rgba(129,140,248,0.4);
-        }
-
-        .text-gradient-lekhika { /* For Lekhika in persona card */
-            background-image: linear-gradient(to right, #a78bfa, #c084fc, #f472b6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .text-gradient-suggestions { /* Consistent with suggestions title */
-            background-image: linear-gradient(to right, #indigo-400, #purple-400, #pink-400);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
+        .futuristic-title span { background-image: linear-gradient(to right, var(--premium-accent), #c084fc, #f472b6); }
+        .text-gradient-lekhika { background-image: linear-gradient(to right, #a78bfa, #c084fc, #f472b6); } /* For Lekhika in persona card */
+        .text-gradient-suggestions { background-image: linear-gradient(to right, #indigo-400, #purple-400, #pink-400); } /* Consistent with suggestions title */
 
 
         /* CTA and AI Button Styling */
         .cta-button, .ai-button {
             display: inline-block;
-            padding: 0.95rem 2.75rem; /* Even larger button */
-            font-size: 1.05rem; /* Slightly larger font */
+            padding: 0.85rem 2.5rem; /* Larger button */
+            font-size: 1rem; /* Slightly larger font */
             font-weight: 700; /* Bold */
             color: var(--bg-dark); /* Dark text for contrast on bright button */
             background-image: linear-gradient(to right, var(--premium-accent) 0%, #818cf8 50%, var(--premium-accent) 100%);
             background-size: 200% auto;
             border: none;
-            border-radius: 0.75rem; /* Even more rounded */
-            box-shadow: 0 8px 25px 0 rgba(0, 255, 255, 0.55); /* Stronger initial shadow */
+            border-radius: 0.6rem; /* More rounded */
+            box-shadow: 0 6px 20px 0 rgba(0, 255, 255, 0.45); /* Stronger initial shadow */
             transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
             text-transform: uppercase;
-            letter-spacing: 0.1em; /* More spacing */
+            letter-spacing: 0.08em; /* More spacing */
             cursor: pointer;
             position: relative;
             overflow: hidden;
             z-index: 1;
-            transform: translateY(0);
-            will-change: transform, box-shadow; /* Optimize for animation */
+            transform: translateY(0); /* Ensure no initial transform issues */
         }
         .cta-button:hover, .ai-button:hover {
             background-position: right center;
-            box-shadow: 0 10px 30px 0 rgba(129, 140, 248, 0.7), 0 0 40px var(--premium-accent); /* Stronger hover glow */
-            transform: translateY(-6px) scale(1.03); /* More pronounced lift */
-            letter-spacing: 0.12em; /* Subtle letter spacing animation */
+            box-shadow: 0 8px 25px 0 rgba(129, 140, 248, 0.6), 0 0 30px var(--premium-accent); /* Stronger hover glow */
+            transform: translateY(-4px) scale(1.02); /* More pronounced lift */
+            letter-spacing: 0.1em; /* Subtle letter spacing animation */
         }
         .ai-button:disabled {
             cursor: not-allowed;
@@ -383,7 +351,6 @@
             box-shadow: none;
             transform: none;
             opacity: 0.7;
-            letter-spacing: 0.08em; /* Reset letter spacing for disabled */
         }
 
         .cta-button::before, .ai-button::before {
@@ -393,7 +360,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%); /* Stronger shine */
+            background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 70%); /* Stronger shine */
             transform: rotate(45deg);
             transition: opacity 0.5s ease;
             opacity: 0;
@@ -426,9 +393,8 @@
                 </a>
             </div>
             <button id="menuBtn" class="md:hidden focus:outline-none p-2 rounded-md hover:bg-gray-700/50 transition-colors">
-                <!-- Phosphor Icons for hamburger and close -->
-                <i class="ph-bold ph-list text-3xl text-white" id="hamburgerIcon"></i>
-                <i class="ph-bold ph-x text-3xl text-white hidden" id="closeIcon"></i>
+                <i class="ph-bold ph-list text-3xl" id="hamburgerIcon"></i>
+                <i class="ph-bold ph-x text-3xl hidden" id="closeIcon"></i>
             </button>
             <nav class="hidden md:flex space-x-6 lg:space-x-8 text-sm font-semibold items-center h-full">
                 <a href="/" class="nav-link">Home</a>
