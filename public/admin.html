@@ -217,7 +217,8 @@
   ]
 }
 
-Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.`;
+Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.
+ABSOLUTELY NO CONVERSATIONAL TEXT OR PREAMBLE OUTSIDE THE JSON.`; // Added aggressive instruction
 
         const defaultOpenAiPrompt = `You are LekhIkA, an expert AI copy alchemist. Analyze the user's marketing copy. Your response MUST be a valid JSON object ONLY. Do NOT include any introductory or concluding text, or any conversational filler outside the JSON. The JSON should strictly adhere to the following structure:
 
@@ -237,7 +238,520 @@ Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions
   ]
 }
 
-Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.`;
+Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.
+YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`; // Added aggressive instruction
+
+        const defaultConfig = {
+            api: { geminiKey: '', openAiKey: '' },
+            model: { primaryProvider: 'gemini', fallbackProvider: 'openai', geminiModelVersion: 'gemini-1.5-flash-latest', openAiModelVersion: 'gpt-4o' },
+            prompting: { geminiSystemPrompt: defaultGeminiPrompt, openAiSystemPrompt: defaultOpenAiPrompt },
+            ui: { mainTitle: "CopyAlchemist's Assistant - ", styledName: "LekhIkA", subtitle: "Your AI partner for crafting compelling, high-conversion copy.", logoUrl: "https://copyalche.my/premium/lekhika-ai-logo-close.png" }
+        };
+
+        function getStoredPassword() { return localStorage.getItem(PASSWORD_KEY) || DEFAULT_PASSWORD; }
+        function handleLogin() {
+            if (passwordInput.value === getStoredPassword()) {
+                loginOverlay.style.display = 'none';
+                adminContent.style.display = 'block';
+                loadSettings();
+            } else {
+                loginError.textContent = 'Incorrect password.';
+                passwordInput.value = '';
+            }
+        }
+        
+        function populateForm(config) {
+            console.log("[Admin UI] Populating form with config:", config);
+            for (const key in allFields) {
+                // IMPORTANT: DO NOT overwrite API key fields or adminSecretKey from server response.
+                // These are sensitive and not returned by the server. They should persist only user input.
+                if (key === 'geminiKey' || key === 'openAiKey' || key === 'adminSecretKey') {
+                    continue; 
+                }
+
+                let value;
+                // Directly map keys from config's sub-objects to the allFields elements
+                if (config.prompting && (key === 'geminiSystemPrompt' || key === 'openAiSystemPrompt')) {
+                    value = config.prompting[key];
+                } else if (config.model && (key === 'primaryModelProvider' || key === 'fallbackModelProvider' || key === 'geminiModelVersion' || key === 'openAiModelVersion')) {
+                    value = config.model[key];
+                } else if (config.ui) {
+                    value = config.ui[key];
+                }
+                
+                // Ensure value is not undefined before assigning, use default empty string
+                allFields[key].value = value || ''; 
+            }
+        }
+
+        async function loadSettings() {
+            console.log("[Admin UI] Attempting to load initial settings from server...");
+            // Added check: If running from a local file, warn user and skip API calls
+            if (!window.location.protocol.startsWith('http')) {
+                console.warn("[Admin UI WARNING] Running admin.html from a local file. Server API calls (save/load) will not work.");
+                saveStatus.style.color = '#f87171';
+                saveStatus.textContent = "Warning: Running from local file. Save/Load to server won't work. Please deploy to Vercel or run locally with 'vercel dev'.";
+                setTimeout(() => saveStatus.textContent = '', 10000); // Keep message longer
+                populateForm(defaultConfig); // Populate with defaults for local interaction
+                return; // Exit function early
+            }
+
+            try {
+                const response = await fetch('/api/config');
+                let configToLoad = defaultConfig;
+                if(response.ok) {
+                    const serverConfig = await response.json();
+                    console.log("[Admin UI] Server returned config (ok):", JSON.stringify(serverConfig, null, 2)); // Log the received config
+                    // Merge server config with default to ensure all keys exist
+                    configToLoad = {
+                        model: {...defaultConfig.model, ...(serverConfig.model || {})},
+                        ui: {...defaultConfig.ui, ...(serverConfig.ui || {})},
+                        prompting: {...defaultConfig.prompting, ...(serverConfig.prompting || {})},
+                        api: defaultConfig.api // API keys are not sent from server, so keep defaults as empty for security
+                    };
+                } else {
+                    const errorData = await response.json();
+                    console.warn(`[Admin UI WARNING] No remote config found or server error (${response.status}):`, errorData.error);
+                    saveStatus.style.color = '#f87171';
+                    saveStatus.textContent = `Error loading config: ${errorData.error || 'Unknown error'}. Using defaults.`;
+                    setTimeout(() => saveStatus.textContent = '', 7000);
+                    // Still use defaultConfig merged, so fields aren't completely blank
+                    configToLoad = {
+                        model: {...defaultConfig.model},
+                        ui: {...defaultConfig.ui},
+                        prompting: {...defaultConfig.prompting},
+                        api: defaultConfig.api // API keys remain empty
+                    };
+                }
+                populateForm(configToLoad);
+            } catch(err) {
+                console.error("[Admin UI ERROR] Error loading remote config, populating with defaults:", err);
+                saveStatus.style.color = '#f87171';
+                saveStatus.textContent = `Network Error loading config: ${err.message}. Using defaults.`;
+                setTimeout(() => saveStatus.textContent = '', 7000);
+                populateForm(defaultConfig); // Fallback to hardcoded defaults on network error
+            }
+        }
+        
+        async function saveSettings() {
+            // Added check: If running from a local file, warn user and skip API calls
+            if (!window.location.protocol.startsWith('http')) {
+                console.warn("[Admin UI WARNING] Running admin.html from a local file. Save operation to server will not work.");
+                saveStatus.style.color = '#f87171';
+                saveStatus.textContent = "Warning: Running from local file. Save will not persist. Deploy to Vercel or run locally with 'vercel dev'.";
+                setTimeout(() => saveStatus.textContent = '', 10000); // Keep message longer
+                return; // Exit function early
+            }
+
+
+            const secretKey = allFields.adminSecretKey.value;
+            if (!secretKey) {
+                saveStatus.style.color = '#f87171';
+                saveStatus.textContent = "Error: The Admin Secret Key is required to save settings.";
+                setTimeout(() => saveStatus.textContent = '', 5000);
+                return;
+            }
+
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+            saveStatus.textContent = ''; // Clear previous status
+
+            const currentConfig = {
+                api: { geminiKey: allFields.geminiKey.value, openAiKey: allFields.openAiKey.value },
+                model: { primaryProvider: allFields.primaryModelProvider.value, fallbackProvider: allFields.fallbackModelProvider.value, geminiModelVersion: allFields.geminiModelVersion.value, openAiModelVersion: allFields.openAiModelVersion.value },
+                prompting: { geminiSystemPrompt: allFields.geminiSystemPrompt.value, openAiSystemPrompt: allFields.openAiSystemPrompt.value },
+                ui: { mainTitle: allFields.mainTitle.value, styledName: allFields.styledName.value, subtitle: allFields.subtitle.value, logoUrl: allFields.logoUrl.value }
+            };
+            console.log("[Admin UI] Attempting to send config to server:", JSON.stringify(currentConfig, null, 2)); // Log the config being sent
+
+            try {
+                const response = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${secretKey}`
+                    },
+                    body: JSON.stringify(currentConfig)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("[Admin UI ERROR] Server responded with error on save:", errorData);
+                    throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+                }
+                saveStatus.style.color = '#4ade80';
+                saveStatus.textContent = 'Settings saved successfully to remote server!';
+                console.log("[Admin UI SUCCESS] Settings save API call successful.");
+
+            } catch (error) {
+                console.error("[Admin UI ERROR] Failed to save settings:", error);
+                saveStatus.style.color = '#f87171';
+                saveStatus.textContent = `Error: ${error.message}`;
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save All Settings';
+                setTimeout(() => saveStatus.textContent = '', 5000); // Clear message after 5 seconds
+                // IMPORTANT: Re-load settings from server after save attempt to verify persistence
+                // This will trigger a GET request to see if the saved data is there.
+                // However, populateForm now explicitly skips API keys, so they'll stay visible.
+                loadSettings(); 
+            }
+        }
+        function changePassword() {
+            const currentPass = currentPasswordEl.value, newPass = newPasswordEl.value, confirmPass = confirmNewPasswordEl.value;
+            passwordChangeStatus.textContent = '';
+            if (currentPass !== getStoredPassword()) { passwordChangeStatus.style.color = '#f87171'; passwordChangeStatus.textContent = 'Current password is incorrect.'; return; }
+            if (newPass.length < 8) { passwordChangeStatus.style.color = '#f87171'; passwordChangeStatus.textContent = 'New password must be at least 8 characters.'; return; }
+            if (newPass !== confirmPass) { passwordChangeStatus.style.color = '#f87171'; passwordChangeStatus.textContent = 'New passwords do not match.'; return; }
+            localStorage.setItem(PASSWORD_KEY, newPass);
+            passwordChangeStatus.style.color = '#4ade80'; passwordChangeStatus.textContent = 'Password changed successfully!';
+            currentPasswordEl.value = ''; newPasswordEl.value = ''; confirmNewPasswordEl.value = '';
+        }
+        function handleTabClick(e) { if (!e.target.matches('.tab')) return; document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active')); e.target.classList.add('active'); const tabContent = e.target.dataset.tab; document.getElementById('gemini-prompt-content').classList.toggle('hidden', tabContent !== 'gemini'); document.getElementById('openai-prompt-content').classList.toggle('hidden', tabContent !== 'openai'); }
+        function exportSettings() {
+            const settingsString = JSON.stringify({
+                api: { geminiKey: allFields.geminiKey.value, openAiKey: allFields.openAiKey.value },
+                model: { primaryProvider: allFields.primaryModelProvider.value, fallbackProvider: allFields.fallbackModelProvider.value, geminiModelVersion: allFields.geminiModelVersion.value, openAiModelVersion: allFields.openAiModelVersion.value },
+                prompting: { geminiSystemPrompt: allFields.geminiSystemPrompt.value, openAiSystemPrompt: allFields.openAiSystemPrompt.value },
+                ui: { mainTitle: allFields.mainTitle.value, styledName: allFields.styledName.value, subtitle: allFields.subtitle.value, logoUrl: allFields.logoUrl.value }
+            }, null, 2);
+            const blob = new Blob([settingsString], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'lekhika-settings.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+        }
+        function importSettings() { importFile.click(); }
+        function handleFileImport(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const importedConfig = JSON.parse(event.target.result);
+                    if (importedConfig.api && importedConfig.prompting && importedConfig.ui) {
+                        // Directly set values from imported config, including API keys for one-time import
+                        allFields.geminiKey.value = importedConfig.api.geminiKey || '';
+                        allFields.openAiKey.value = importedConfig.api.openAiKey || '';
+                        allFields.primaryModelProvider.value = importedConfig.model.primaryProvider || 'gemini';
+                        allFields.fallbackModelProvider.value = importedConfig.model.fallbackModelProvider || 'openai';
+                        allFields.geminiModelVersion.value = importedConfig.model.geminiModelVersion || 'gemini-1.5-flash-latest';
+                        allFields.openAiModelVersion.value = importedConfig.model.openAiModelVersion || 'gpt-4o';
+                        allFields.geminiSystemPrompt.value = importedConfig.prompting.geminiSystemPrompt || defaultPrompt;
+                        allFields.openAiSystemPrompt.value = importedConfig.prompting.openAiSystemPrompt || defaultPrompt;
+                        allFields.mainTitle.value = importedConfig.ui.mainTitle || defaultConfig.ui.mainTitle;
+                        allFields.styledName.value = importedConfig.ui.styledName || defaultConfig.ui.styledName;
+                        allFields.subtitle.value = importedConfig.ui.subtitle || defaultConfig.ui.subtitle;
+                        allFields.logoUrl.value = importedConfig.ui.logoUrl || defaultConfig.ui.logoUrl;
+
+                        alert("Settings imported successfully! Fill in your secret key and click 'Save All Settings' to apply.");
+                    } else { alert("Invalid configuration file."); }
+                } catch (err) { alert("Error parsing file. Make sure it's a valid JSON."); console.error(err); }
+            };
+            reader.readAsText(file); importFile.value = '';
+        }
+        function showConfirmation(title, text, action) { confirmTitle.textContent = title; confirmText.textContent = text; confirmAction = action; confirmOverlay.classList.remove('hidden'); }
+        async function resetToDefaults() {
+            showConfirmation('Reset All Settings?', 'This will erase all your settings on the server. This cannot be undone.', async () => {
+                try {
+                    // Create a dummy save request with empty data
+                    const secretKey = allFields.adminSecretKey.value;
+                    if (!secretKey) {
+                        alert("Admin Secret Key is required to reset settings.");
+                        return;
+                    }
+                    const response = await fetch('/api/config', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${secretKey}` },
+                        body: JSON.stringify(defaultConfig) // Send default config to effectively "reset"
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+                    }
+                    console.log("[Admin UI] Reset to defaults via API successful.");
+                    loadSettings(); // Reload to reflect defaults
+                    alert("Settings have been reset to default on the server.");
+                } catch(err) {
+                    console.error("[Admin UI ERROR] Failed to reset settings on server:", err);
+                    alert(`Failed to reset settings on server: ${err.message}.`);
+                }
+            });
+        }
+        async function testGeminiKey() { const apiKey=allFields.geminiKey.value;if(!apiKey){geminiKeyStatus.textContent='❌ Key cannot be empty.';geminiKeyStatus.style.color='#f87171';return;}testGeminiBtn.disabled=true;testGeminiBtn.textContent='Testing...';geminiKeyStatus.textContent='Validating...';geminiKeyStatus.style.color='#60a5fa';const url=`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;try{const response=await fetch(url);if(response.ok){geminiKeyStatus.textContent='✔️ Valid Key';geminiKeyStatus.style.color='#4ade80';}else{geminiKeyStatus.textContent=`❌ Invalid Key (Status: ${response.status})`;geminiKeyStatus.style.color='#f87171';}}catch(error){console.error("Gemini Test Error:",error);geminiKeyStatus.textContent='❌ Network Error';geminiKeyStatus.style.color='#f87171';}finally{testGeminiBtn.disabled=false;testGeminiBtn.textContent='Test';}}
+        async function testOpenAiKey() { const apiKey=allFields.openAiKey.value;if(!apiKey){openAiKeyStatus.textContent='❌ Key cannot be empty.';openAiKeyStatus.style.color='#f87171';return;}testOpenAiBtn.disabled=true;testOpenAiBtn.textContent='Testing...';openAiKeyStatus.textContent='Validating...';openAiKeyStatus.style.color='#60a5fa';const url='https://api.openai.com/v1/models';const headers={'Authorization':`Bearer ${apiKey}`};try{const response=await fetch(url,{headers});if(response.ok){openAiKeyStatus.textContent='✔️ Valid Key';geminiKeyStatus.style.color='#4ade80';}else{openAiKeyStatus.textContent=`❌ Invalid Key (Status: ${response.status})`;openAiKeyStatus.style.color='#f87171';}}catch(error){console.error("OpenAI Test Error:",error);openAiKeyStatus.textContent='❌ Network Error';openAiKeyStatus.style.color='#f87171';}finally{testOpenAiBtn.disabled=false;testOpenAiBtn.textContent='Test';}}
+        
+        // Event Listeners
+        loginBtn.addEventListener('click', handleLogin);
+        passwordInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') handleLogin(); });
+        saveBtn.addEventListener('click', saveSettings);
+        testGeminiBtn.addEventListener('click', testGeminiKey);
+        testOpenAiBtn.addEventListener('click', testOpenAiKey);
+        changePasswordBtn.addEventListener('click', changePassword);
+        promptTabs.addEventListener('click', handleTabClick);
+        exportSettingsBtn.addEventListener('click', exportSettings);
+        importSettingsBtn.addEventListener('click', importSettings);
+        importFile.addEventListener('change', handleFileImport);
+        resetSettingsBtn.addEventListener('click', resetToDefaults);
+        confirmCancel.addEventListener('click', () => { confirmOverlay.classList.add('hidden'); confirmAction = null; });
+        confirmProceed.addEventListener('click', () => { if(confirmAction) confirmAction(); confirmOverlay.classList.add('hidden'); confirmAction = null; });
+
+        // Initial load of settings on admin panel access
+        // It's important to call this AFTER all event listeners are set up
+        loadSettings(); 
+    });
+    </script>
+</body>
+</html>
+```
+
+I understand your frustration with the recurring issues and the logs not showing the necessary detail. My apologies for the incomplete Canvas content in the previous response; it seems the file was truncated, preventing you from getting the full code with the crucial browser console logging.
+
+You're right, we need to get to the bottom of this. The problem is that the detailed JSON payloads are not appearing in your Vercel dashboard logs, which is typical for Vercel's logging interface. The logs I designed to provide that granular detail are intended for your **browser's developer console**.
+
+**The solution is to ensure your `public/admin.html` file has the *complete* code, which includes the necessary `console.log` statements for browser debugging.**
+
+**Here is the *complete* `admin.html` file. Please replace the *entire content* of your `public/admin.html` file with this code:**
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LekhIkA Super Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .card { background-color: #1e293b; border: 1px solid #334155; }
+        .label { color: #94a3b8; }
+        .input, .textarea, .select { background-color: #334155; border: 1px solid #475569; color: #e2e8f0; transition: all .2s ease-in-out; }
+        .input:focus, .textarea:focus, .select:focus { background-color: #475569; border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79,70,229,.5); outline: none; }
+        .btn-primary { background-color: #4f46e5; transition: background-color .2s; }
+        .btn-primary:hover { background-color: #6366f1; }
+        .btn-secondary { background-color: #334155; transition: background-color .2s; }
+        .btn-secondary:hover { background-color: #475569; }
+        .btn-tertiary { background-color: #374151; border: 1px solid #4b5563; transition: background-color .2s; }
+        .btn-tertiary:hover { background-color: #4b5563; }
+        .btn-tertiary:disabled { background-color: #1f2937; color: #6b7280; cursor: not-allowed; }
+        .btn-danger { background-color: #991b1b; transition: background-color .2s; }
+        .btn-danger:hover { background-color: #b91c1c; }
+        #login-overlay, #confirm-overlay { backdrop-filter: blur(10px); }
+        .tab { border-color: transparent; }
+        .tab.active { border-color: #4f46e5; background-color: #334155; }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+    <div id="login-overlay" class="fixed inset-0 bg-slate-900/80 flex items-center justify-center z-50">
+        <div class="card p-8 rounded-lg shadow-2xl w-full max-w-sm">
+            <h2 class="text-2xl font-bold text-center text-white mb-6">Admin Access</h2>
+            <div class="space-y-4">
+                <div><label for="password" class="label block text-sm font-medium mb-1">Password</label><input type="password" id="password" class="input w-full p-2 rounded-md"></div>
+                <button id="login-btn" class="w-full btn-primary text-white font-bold py-2 px-4 rounded-md">Login</button>
+                <p id="login-error" class="text-red-400 text-sm text-center h-4"></p>
+            </div>
+        </div>
+    </div>
+    <div id="confirm-overlay" class="hidden fixed inset-0 bg-slate-900/80 flex items-center justify-center z-50">
+        <div class="card p-8 rounded-lg shadow-2xl w-full max-w-md">
+            <h2 id="confirm-title" class="text-xl font-bold text-center text-white mb-4">Are you sure?</h2>
+            <p id="confirm-text" class="text-slate-400 text-center mb-6">This action cannot be undone.</p>
+            <div class="flex justify-center gap-4">
+                <button id="confirm-cancel" class="btn-secondary text-white font-bold py-2 px-6 rounded-md">Cancel</button>
+                <button id="confirm-proceed" class="btn-danger text-white font-bold py-2 px-6 rounded-md">Proceed</button>
+            </div>
+        </div>
+    </div>
+    <div id="admin-content" class="hidden">
+        <header class="mb-8 text-center"><h1 class="text-4xl font-bold text-white">LekhIkA Control Panel</h1><p class="text-slate-400 mt-2">Manage your AI copywriting assistant's settings.</p></header>
+        <div class="max-w-5xl mx-auto space-y-8">
+            <div class="card p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold border-b border-slate-600 pb-3 mb-4">Security & Access</h2>
+                <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                    <div class="space-y-4">
+                        <p class="text-sm text-slate-400">Change the password used to access this admin panel. It is stored in your browser's local storage.</p>
+                        <div><label for="currentPassword" class="label block text-sm font-bold mb-1">Current Password</label><input type="password" id="currentPassword" class="input w-full p-2 rounded-md"></div>
+                        <div><label for="newPassword" class="label block text-sm font-bold mb-1">New Password</label><input type="password" id="newPassword" class="input w-full p-2 rounded-md"></div>
+                        <div><label for="confirmNewPassword" class="label block text-sm font-bold mb-1">Confirm New Password</label><input type="password" id="confirmNewPassword" class="input w-full p-2 rounded-md"></div>
+                        <button id="changePasswordBtn" class="btn-secondary text-white font-semibold py-2 px-4 rounded-md text-sm">Change Password</button>
+                        <p id="passwordChangeStatus" class="text-sm h-5 mt-1"></p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-400 mb-3">This key is required to authorize saving settings to the server.</p>
+                        <label for="adminSecretKey" class="label block text-sm font-bold mb-1">Admin Secret Key</label>
+                        <input type="password" id="adminSecretKey" class="input w-full p-2 rounded-md">
+                        <p class="text-xs text-slate-500 mt-1">Must match the `ADMIN_SECRET_KEY` variable in your Vercel Environment Variables.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold border-b border-slate-600 pb-3 mb-4">API & Model Configuration</h2>
+                <div class="grid md:grid-cols-1 gap-6">
+                    <div>
+                        <label for="geminiKey" class="label block text-sm font-bold mb-1">Gemini API Key</label>
+                        <div class="flex items-center gap-2"><input type="password" id="geminiKey" class="input w-full p-2 rounded-md" placeholder="Enter Gemini Key"><button id="testGeminiBtn" class="btn-tertiary text-white font-semibold py-2 px-4 rounded-md text-sm whitespace-nowrap">Test</button></div>
+                        <p id="geminiKeyStatus" class="text-sm h-5 mt-1 ml-1"></p>
+                    </div>
+                    <div>
+                        <label for="openAiKey" class="label block text-sm font-bold mb-1">OpenAI API Key</label>
+                        <div class="flex items-center gap-2"><input type="password" id="openAiKey" class="input w-full p-2 rounded-md" placeholder="Enter OpenAI Key"><button id="testOpenAiBtn" class="btn-tertiary text-white font-semibold py-2 px-4 rounded-md text-sm whitespace-nowrap">Test</button></div>
+                        <p id="openAiKeyStatus" class="text-sm h-5 mt-1 ml-1"></p>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6 mt-4 border-t border-slate-700 pt-6">
+                    <div>
+                        <label for="primaryModelProvider" class="label block text-sm font-bold mb-1">Primary AI Provider</label>
+                        <select id="primaryModelProvider" class="select w-full p-2 rounded-md"><option value="gemini">Gemini</option><option value="openai">OpenAI</option></select>
+                    </div>
+                    <div>
+                        <label for="fallbackModelProvider" class="label block text-sm font-bold mb-1">Fallback AI Provider</label>
+                        <select id="fallbackModelProvider" class="select w-full p-2 rounded-md"><option value="openai">OpenAI</option><option value="gemini">Gemini</option></select>
+                        <p class="text-xs text-slate-500 mt-1">If the primary model fails, the fallback will be used.</p>
+                    </div>
+                    <div>
+                        <label for="geminiModelVersion" class="label block text-sm font-bold mb-1">Gemini Model Version</label>
+                        <select id="geminiModelVersion" class="select w-full p-2 rounded-md">
+                            <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash (Fast & Cheap)</option>
+                            <option value="gemini-1.5-pro-latest">Gemini 1.5 Pro (Advanced)</option>
+                            <option value="gemini-1.0-pro">Gemini 1.0 Pro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="openAiModelVersion" class="label block text-sm font-bold mb-1">OpenAI Model Version</label>
+                        <select id="openAiModelVersion" class="select w-full p-2 rounded-md">
+                            <option value="gpt-4o">GPT-4o (Latest & Greatest)</option>
+                            <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Fast & Cheap)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-4">Behavior & Personality (System Prompts)</h2>
+                <div class="border-b border-slate-600 mb-4">
+                    <nav class="flex -mb-px gap-4" id="prompt-tabs">
+                        <button data-tab="gemini" class="tab active whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Gemini Prompt</button>
+                        <button data-tab="openai" class="tab whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">OpenAI Prompt</button>
+                    </nav>
+                </div>
+                <div id="gemini-prompt-content">
+                    <p class="text-sm text-slate-400 mb-3">Instructions for the Gemini model.</p>
+                    <textarea id="geminiSystemPrompt" rows="15" class="textarea w-full p-3 rounded-md text-sm leading-relaxed"></textarea>
+                </div>
+                <div id="openai-prompt-content" class="hidden">
+                    <p class="text-sm text-slate-400 mb-3">Instructions for the OpenAI model. Often, being more direct with OpenAI helps.</p>
+                    <textarea id="openAiSystemPrompt" rows="15" class="textarea w-full p-3 rounded-md text-sm leading-relaxed"></textarea>
+                </div>
+            </div>
+            <div class="card p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold border-b border-slate-600 pb-3 mb-4">UI Customization</h2>
+                <div class="space-y-4">
+                    <div><label for="mainTitle" class="label block text-sm font-bold mb-1">Main Title</label><input type="text" id="mainTitle" class="input w-full p-2 rounded-md"><p class="text-xs text-slate-500 mt-1">Text before the styled name.</p></div>
+                    <div><label for="styledName" class="label block text-sm font-bold mb-1">Styled Name</label><input type="text" id="styledName" class="input w-full p-2 rounded-md"></div>
+                    <div><label for="subtitle" class="label block text-sm font-bold mb-1">Subtitle</label><input type="text" id="subtitle" class="input w-full p-2 rounded-md"></div>
+                    <div><label for="logoUrl" class="label block text-sm font-bold mb-1">LekhIkA Avatar Image URL</label><input type="text" id="logoUrl" class="input w-full p-2 rounded-md"></div>
+                </div>
+            </div>
+            <div class="card p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold border-b border-slate-600 pb-3 mb-4">Settings Management</h2>
+                <div class="grid sm:grid-cols-3 gap-4 text-center">
+                    <button id="exportSettingsBtn" class="btn-secondary text-white font-semibold py-2 px-4 rounded-md text-sm">Export Settings</button>
+                    <button id="importSettingsBtn" class="btn-secondary text-white font-semibold py-2 px-4 rounded-md text-sm">Import Settings</button>
+                    <button id="resetSettingsBtn" class="btn-danger text-white font-semibold py-2 px-4 rounded-md text-sm">Reset All Settings</button>
+                    <input type="file" id="importFile" class="hidden" accept="application/json">
+                </div>
+            </div>
+            <div class="text-center pt-4">
+                <button id="save-btn" class="w-full md:w-1/2 btn-primary text-white font-bold py-3 px-4 rounded-lg text-lg">Save All Settings</button>
+                <p id="save-status" class="h-5 mt-3"></p>
+            </div>
+        </div>
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const DEFAULT_PASSWORD = "alchemy2025";
+        const loginOverlay = document.getElementById('login-overlay');
+        const adminContent = document.getElementById('admin-content');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
+        const loginError = document.getElementById('login-error');
+        const saveBtn = document.getElementById('save-btn');
+        const saveStatus = document.getElementById('save-status');
+        const allFields = {
+            geminiKey: document.getElementById('geminiKey'),
+            openAiKey: document.getElementById('openAiKey'),
+            primaryModelProvider: document.getElementById('primaryModelProvider'),
+            fallbackModelProvider: document.getElementById('fallbackModelProvider'),
+            geminiModelVersion: document.getElementById('geminiModelVersion'),
+            openAiModelVersion: document.getElementById('openAiModelVersion'),
+            geminiSystemPrompt: document.getElementById('geminiSystemPrompt'),
+            openAiSystemPrompt: document.getElementById('openAiSystemPrompt'),
+            mainTitle: document.getElementById('mainTitle'),
+            styledName: document.getElementById('styledName'),
+            subtitle: document.getElementById('subtitle'),
+            logoUrl: document.getElementById('logoUrl'),
+            adminSecretKey: document.getElementById('adminSecretKey')
+        };
+        const testGeminiBtn = document.getElementById('testGeminiBtn');
+        const testOpenAiBtn = document.getElementById('testOpenAiBtn');
+        const geminiKeyStatus = document.getElementById('geminiKeyStatus');
+        const openAiKeyStatus = document.getElementById('openAiKeyStatus');
+        const currentPasswordEl = document.getElementById('currentPassword');
+        const newPasswordEl = document.getElementById('newPassword');
+        const confirmNewPasswordEl = document.getElementById('confirmNewPassword');
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        const passwordChangeStatus = document.getElementById('passwordChangeStatus');
+        const promptTabs = document.getElementById('prompt-tabs');
+        const exportSettingsBtn = document.getElementById('exportSettingsBtn');
+        const importSettingsBtn = document.getElementById('importSettingsBtn');
+        const importFile = document.getElementById('importFile');
+        const resetSettingsBtn = document.getElementById('resetSettingsBtn');
+        const confirmOverlay = document.getElementById('confirm-overlay');
+        const confirmTitle = document.getElementById('confirm-title');
+        const confirmText = document.getElementById('confirm-text');
+        const confirmCancel = document.getElementById('confirm-cancel');
+        const confirmProceed = document.getElementById('confirm-proceed');
+        let confirmAction = null;
+        const PASSWORD_KEY = 'lekhikaAdminPassword';
+        // Updated default prompts for stricter JSON output
+        const defaultGeminiPrompt = `You are LekhIkA, an expert AI copy alchemist. Your task is to analyze marketing copy provided by the user. Respond ONLY with a JSON object. Do NOT include any conversational text or explanations outside the JSON. The JSON must contain the following keys and structure:
+
+{
+  "overallScore": [number, 0-100],
+  "feedbackMessage": [string, a concise feedback message based on the score],
+  "parameters": {
+    "readability": [number, 0-10],
+    "tone": [number, 0-10],
+    "engagement": [number, 0-10],
+    "impact": [number, 0-10],
+    "cta": [number, 0-10],
+    "confidence": [number, 0-10]
+  },
+  "suggestions": [
+    { "type": "improvement"|"tip"|"info", "text": "concise suggestion" }
+  ]
+}
+
+Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.
+ABSOLUTELY NO CONVERSATIONAL TEXT OR PREAMBLE OUTSIDE THE JSON.`; // Added aggressive instruction
+
+        const defaultOpenAiPrompt = `You are LekhIkA, an expert AI copy alchemist. Analyze the user's marketing copy. Your response MUST be a valid JSON object ONLY. Do NOT include any introductory or concluding text, or any conversational filler outside the JSON. The JSON should strictly adhere to the following structure:
+
+{
+  "overallScore": [number, 0-100],
+  "feedbackMessage": [string, a concise feedback message based on the score],
+  "parameters": {
+    "readability": [number, 0-10],
+    "tone": [number, 0-10],
+    "engagement": [number, 0-10],
+    "impact": [number, 0-10],
+    "cta": [number, 0-10],
+    "confidence": [number, 0-10]
+  },
+  "suggestions": [
+    { "type": "improvement"|"tip"|"info", "text": "concise suggestion" }
+  ]
+}
+
+Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.
+YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`; // Added aggressive instruction
 
         const defaultConfig = {
             api: { geminiKey: '', openAiKey: '' },
