@@ -282,6 +282,18 @@ YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`; // Added ag
                 // Ensure value is not undefined before assigning, use default empty string
                 allFields[key].value = value || ''; 
             }
+            // --- NEW LOGIC TO FORCE DEFAULT STRICT PROMPTS IF OLD ONES ARE LOADED ---
+            // This ensures the user sees and can save the strict prompts, even if KV held old ones.
+            // Check length as a proxy for old prompt. If it's the short one, force the long one.
+            if (allFields.geminiSystemPrompt.value.length < 150 && allFields.geminiSystemPrompt.value !== defaultConfig.prompting.geminiSystemPrompt) { 
+                allFields.geminiSystemPrompt.value = defaultConfig.prompting.geminiSystemPrompt;
+                console.log("[Admin UI] Forced Gemini System Prompt to new strict default.");
+            }
+            if (allFields.openAiSystemPrompt.value.length < 150 && allFields.openAiSystemPrompt.value !== defaultConfig.prompting.openAiSystemPrompt) { 
+                allFields.openAiSystemPrompt.value = defaultConfig.prompting.openAiSystemPrompt;
+                console.log("[Admin UI] Forced OpenAI System Prompt to new strict default.");
+            }
+            // --- END NEW LOGIC ---
         }
 
         async function loadSettings() {
@@ -428,7 +440,7 @@ YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`; // Added ag
                         // Directly set values from imported config, including API keys for one-time import
                         allFields.geminiKey.value = importedConfig.api.geminiKey || '';
                         allFields.openAiKey.value = importedConfig.api.openAiKey || '';
-                        allFields.primaryModelProvider.value = importedConfig.model.primaryProvider || 'gemini';
+                        allFields.primaryModelProvider.value = importedConfig.model.primaryModelProvider || 'gemini';
                         allFields.fallbackModelProvider.value = importedConfig.model.fallbackModelProvider || 'openai';
                         allFields.geminiModelVersion.value = importedConfig.model.geminiModelVersion || 'gemini-1.5-flash-latest';
                         allFields.openAiModelVersion.value = importedConfig.model.openAiModelVersion || 'gpt-4o';
