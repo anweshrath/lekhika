@@ -460,12 +460,16 @@
          * If running locally or API fails, falls back to original rule-based analysis.
          */
         async function loadConfigAndInitialize() {
+            console.log("[Lekhika UI] Starting loadConfigAndInitialize...");
             // Check if running on a server (http or https) vs. locally (file://)
             if (window.location.protocol.startsWith('http')) {
                 try {
+                    console.log("[Lekhika UI] Fetching config from /api/config...");
                     const response = await fetch('/api/config');
+                    
                     if (!response.ok) {
                         const errorData = await response.json();
+                        console.error("[Lekhika UI ERROR] Failed to fetch config from server:", errorData);
                         // Display a more user-friendly error if config not found
                         if (response.status === 404) {
                             throw new Error('Configuration not found. Please save settings in the admin panel first.');
@@ -473,46 +477,62 @@
                         throw new Error(errorData.error || `Config server error! Status: ${response.status}`);
                     }
                     lekhikaConfig = await response.json();
+                    console.log("[Lekhika UI] Successfully fetched config:", JSON.stringify(lekhikaConfig, null, 2));
 
                     // Show the main app container only after successful config load
                     document.getElementById('app-container').style.display = 'block';
-                    // Hide the AI button initially, show later if needed for local mode
-                    document.getElementById('analyzeBtn').style.display = 'inline-block';
+                    // Show the AI button since config is loaded
+                    analyzeBtn.style.display = 'inline-block';
                     copyInput.setAttribute('placeholder', 'Paste your marketing copy... then click the button below for AI analysis.');
 
                     // Remove existing real-time listener if it was set
                     if (copyInput.getAttribute('listener') === 'true') {
                         copyInput.removeEventListener('input', handleOriginalRealTimeAnalysis);
                         copyInput.removeAttribute('listener'); // Remove attribute to signify listener is gone
+                        console.log("[Lekhika UI] Removed original real-time analysis listener.");
                     }
 
                     // Update UI elements based on fetched config
                     const uiConf = lekhikaConfig.ui;
-                    document.getElementById('mainTitle').firstChild.textContent = uiConf.mainTitle;
-                    document.getElementById('styledName').textContent = uiConf.styledName;
-                    document.getElementById('subtitle').textContent = uiConf.subtitle;
-                    document.getElementById('lekhikaImage').src = uiConf.logoUrl;
+                    if (uiConf) {
+                        document.getElementById('mainTitle').firstChild.textContent = uiConf.mainTitle || "CopyAlchemist's Assistant - ";
+                        document.getElementById('styledName').textContent = uiConf.styledName || "LekhIkA";
+                        document.getElementById('subtitle').textContent = uiConf.subtitle || "Your AI partner for crafting compelling, high-conversion copy.";
+                        document.getElementById('lekhikaImage').src = uiConf.logoUrl || "https://copyalche.my/premium/lekhika-ai-logo-close.png";
 
-                    // Update the CSS variable for the body::before background image
-                    document.documentElement.style.setProperty('--lekhika-bg-logo-url', `url('${uiConf.logoUrl}')`);
+                        // Update the CSS variable for the body::before background image
+                        document.documentElement.style.setProperty('--lekhika-bg-logo-url', `url('${uiConf.logoUrl || "https://copyalche.my/premium/lekhika-ai-logo-close.png"}')`);
+                        console.log("[Lekhika UI] UI elements updated from config.");
+                    } else {
+                        console.warn("[Lekhika UI WARNING] UI configuration missing from fetched config. Using defaults.");
+                        // Fallback to defaults if uiConf is missing from fetched config
+                        document.getElementById('mainTitle').firstChild.textContent = "CopyAlchemist's Assistant - ";
+                        document.getElementById('styledName').textContent = "LekhIkA";
+                        document.getElementById('subtitle').textContent = "Your AI partner for crafting compelling, high-conversion copy.";
+                        document.getElementById('lekhikaImage').src = "https://copyalche.my/premium/lekhika-ai-logo-close.png";
+                        document.documentElement.style.setProperty('--lekhika-bg-logo-url', `url('https://copyalche.my/premium/lekhika-ai-logo-close.png')`);
+                    }
                     
                     // Initialize parameters UI for AI analysis
                     initializeParametersUI(AI_PARAMETERS_CONFIG);
                     // Attach event listener for the AI analysis button
                     analyzeBtn.addEventListener('click', handleAiAnalysis);
+                    console.log("[Lekhika UI] AI analysis mode activated.");
 
                 } catch (error) {
-                    console.error("Failed to load remote configuration:", error);
-                    showError(`Failed to load remote configuration: ${error.message}`);
+                    console.error("[Lekhika UI ERROR] Failed to load remote configuration:", error);
+                    showError(`Failed to load remote configuration: ${error.message}. Please save settings in the admin panel.`);
                 }
             } else {
                 // We're running locally (file:// protocol). Use the original rule-based system.
+                console.warn("[Lekhika UI WARNING] Running Lekhika from a local file. API calls will be skipped; using rule-based analysis.");
                 document.getElementById('app-container').style.display = 'block';
-                document.getElementById('analyzeBtn').style.display = 'none'; // Hide AI button in local mode
+                analyzeBtn.style.display = 'none'; // Hide AI button in local mode
                 copyInput.setAttribute('placeholder', 'Paste your marketing copy... LekhIkA will analyze it in real-time.');
                 initializeParametersUI(ORIGINAL_PARAMETERS_CONFIG);
                 copyInput.addEventListener('input', handleOriginalRealTimeAnalysis);
                 copyInput.setAttribute('listener', 'true'); // Mark that real-time listener is active
+                console.log("[Lekhika UI] Rule-based analysis mode activated.");
             }
 
             // Mobile menu toggle logic (already present, moved inside DOMContentLoaded)
@@ -546,28 +566,42 @@
             const text = copyInput.value;
             if (!text.trim()) { alert('Please enter some text to analyze.'); return; }
 
+            console.log("[Lekhika UI] Starting AI analysis...");
             resetUIForAnalysis(); // Prepare UI for new analysis
 
             try {
                 const primaryProvider = lekhikaConfig.model.primaryProvider;
+                console.log(`[Lekhika UI] Attempting analysis with primary provider: ${primaryProvider}`);
                 let analysis = await attemptAnalysis(text, primaryProvider);
+                console.log("[Lekhika UI] Primary analysis successful. Updating UI.");
                 updateUIWithAnalysis(analysis);
             } catch (primaryError) {
-                console.warn(`Primary model (${lekhikaConfig.model.primaryProvider}) failed:`, primaryError);
+                console.warn(`[Lekhika UI WARNING] Primary model (${lekhikaConfig.model.primaryProvider}) failed:`, primaryError);
                 scoreFeedback.textContent = `Primary model failed. Trying fallback...`;
                 const fallbackProvider = lekhikaConfig.model.fallbackProvider;
+                if (primaryProvider === fallbackProvider) { // Prevent infinite loop if fallback is same as primary
+                    console.error("[Lekhika UI ERROR] Primary and Fallback providers are the same. Not retrying.");
+                    suggestionsContainer.innerHTML = `<p class="text-red-400 text-center py-4">AI analysis failed. Primary and fallback models are the same, no retry.</p>`;
+                    scoreFeedback.textContent = "Analysis failed. Check API keys and model settings.";
+                    scoreFeedback.style.color = '#f87171';
+                    return;
+                }
+
                 try {
+                    console.log(`[Lekhika UI] Attempting analysis with fallback provider: ${fallbackProvider}`);
                     let analysis = await attemptAnalysis(text, fallbackProvider);
+                    console.log("[Lekhika UI] Fallback analysis successful. Updating UI.");
                     updateUIWithAnalysis(analysis);
                 } catch (fallbackError) {
-                    console.error(`Fallback model (${lekhikaConfig.model.fallbackProvider}) also failed:`, fallbackError);
-                    suggestionsContainer.innerHTML = `<p class="text-red-400 text-center py-4">Both AI models failed. Please contact the administrator.</p>`;
+                    console.error(`[Lekhika UI ERROR] Fallback model (${lekhikaConfig.model.fallbackProvider}) also failed:`, fallbackError);
+                    suggestionsContainer.innerHTML = `<p class="text-red-400 text-center py-4">Both AI models failed. Please contact the administrator and check Vercel logs.</p>`;
                     scoreFeedback.textContent = "Analysis failed. Double check API keys in Admin Panel.";
-                    scoreFeedback.style.color = '#f87171'; // Red color for error feedback
+                    scoreFeedback.style.color = '#f87171';
                 }
             } finally {
                 analyzeBtn.disabled = false;
                 analyzeBtn.textContent = 'Unleash AI Analysis';
+                console.log("[Lekhika UI] Analysis process finished.");
             }
         }
 
@@ -579,16 +613,21 @@
          * @throws {Error} - If the API response is not OK.
          */
         async function attemptAnalysis(text, provider) {
+            console.log(`[Lekhika UI] Sending analysis request to /api/analyze for ${provider}...`);
             const response = await fetch('/api/analyze', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text, provider })
             });
+            console.log(`[Lekhika UI] Received response from /api/analyze, status: ${response.status}`);
             if (!response.ok) {
                 const errorData = await response.json();
+                console.error("[Lekhika UI ERROR] /api/analyze responded with error:", JSON.stringify(errorData, null, 2));
                 throw new Error(errorData.error || `Analysis failed for ${provider}.`);
             }
-            return await response.json();
+            const analysisResult = await response.json();
+            console.log("[Lekhika UI] Received analysis result:", JSON.stringify(analysisResult, null, 2));
+            return analysisResult;
         }
 
         /**
@@ -596,6 +635,7 @@
          * @param {Object} analysis - The analysis object received from the API.
          */
         function updateUIWithAnalysis(analysis) {
+            console.log("[Lekhika UI] Updating UI with analysis results:", JSON.stringify(analysis, null, 2));
             updateOverallScoreUI(analysis.overallScore);
             updateScoreFeedback(analysis.overallScore, analysis.feedbackMessage);
             updateAllParameters(analysis.parameters);
@@ -616,6 +656,7 @@
             scoreCircleFg.classList.remove('glowing-circle');
             scoreFeedback.classList.remove('animate-pulse-feedback');
             scoreFeedback.style.color = ''; // Reset color
+            console.log("[Lekhika UI] UI reset for new analysis.");
         }
 
         /**
@@ -628,6 +669,7 @@
                 const paramElement = `<div class="parameter-card bg-slate-700 p-2.5 sm:p-3 md:p-4 rounded-lg sm:rounded-xl shadow-md hover:shadow-lg border border-slate-600/80" style="animation: popInAdvanced 0.6s ease-out ${index * 100 + 200}ms forwards; opacity:0; transform: perspective(500px) translateZ(-30px) translateY(15px);"><div class="flex items-center justify-between mb-1.5 sm:mb-2"><div class="flex items-center space-x-1.5 sm:space-x-2"><span class="text-[var(--premium-accent)]">${param.icon || ''}</span><h4 class="text-xs sm:text-sm font-semibold text-slate-200">${param.name}</h4></div><span id="${param.id}ScoreText" class="text-[10px] sm:text-xs font-bold text-[var(--premium-accent)] bg-[var(--premium-accent-dark)]/30 px-1.5 sm:px-2 py-0.5 rounded-full">0/10</span></div><div class="parameter-bar-bg w-full h-2 sm:h-2.5 md:h-3 rounded-full overflow-hidden"><div id="${param.id}Bar" class="parameter-bar-fg h-2 sm:h-2.5 md:h-3 rounded-full"></div></div></div>`;
                 parametersContainer.insertAdjacentHTML('beforeend', paramElement);
             });
+            console.log("[Lekhika UI] Parameters UI initialized.");
         }
 
         // --- Original functions, kept for local mode fallback ---
@@ -796,6 +838,7 @@
                 scoreText.classList.remove('glowing-score-text');
                 scoreCircleFg.classList.remove('glowing-circle');
             }
+            console.log(`[Lekhika UI] Overall score UI updated to: ${s}`);
         }
 
         /**
@@ -823,12 +866,18 @@
          * @param {Object} params - Object where keys are parameter IDs and values are scores (0-10).
          */
         function updateAllParameters(params) {
-            if (!params) return;
+            if (!params) {
+                console.warn("[Lekhika UI WARNING] No parameters provided to updateAllParameters. Showing 0/10.");
+                // Ensure all parameters are reset to 0 if no params are passed
+                AI_PARAMETERS_CONFIG.forEach(p => updateParameterUI(p.id, 0));
+                return;
+            }
             for (const key in params) {
                 if (Object.hasOwnProperty.call(params, key)) {
                     updateParameterUI(key.toLowerCase(), params[key]);
                 }
             }
+            console.log("[Lekhika UI] All parameters UI updated.");
         }
 
         /**
@@ -840,6 +889,7 @@
             suggestionsContainer.innerHTML = ''; // Clear previous suggestions
             if (!suggs || suggs.length === 0) {
                 suggestionsContainer.innerHTML = '<p class="text-slate-400 italic text-center py-3 sm:py-4 text-xs sm:text-sm">No suggestions yet. Let LekhIkA analyze your copy!</p>';
+                console.log("[Lekhika UI] No suggestions to display.");
                 return;
             }
 
@@ -873,10 +923,7 @@
 
                 const iconSpan = document.createElement('span');
                 iconSpan.className = `${iconCC} mr-2 sm:mr-2.5 mt-0.5`;
-                // Only add icon if it's an AI suggestion or if it's explicitly part of original config (which it is)
-                // The original implementation had icons as part of the config, so this is fine.
                 iconSpan.innerHTML = icon;
-
 
                 const textP = document.createElement('p');
                 textP.className = `text-[11px] sm:text-xs md:text-sm ${baseTC}`;
@@ -886,6 +933,7 @@
                 suggEl.appendChild(textP);
                 suggestionsContainer.appendChild(suggEl);
             });
+            console.log("[Lekhika UI] Suggestions displayed.");
         }
 
         /**
@@ -918,6 +966,7 @@
             scoreFeedback.textContent = ft;
             scoreFeedback.className = `text-xs sm:text-sm ${tcc} mt-2 sm:mt-3 text-center min-h-[18px] sm:min-h-[20px] px-1 sm:px-2 transition-all duration-300`;
             setTimeout(() => scoreFeedback.classList.add('animate-pulse-feedback'), 50); // Re-apply animation
+            console.log(`[Lekhika UI] Score feedback updated: ${ft}`);
         }
 
         // Call the main initialization function when the DOM is ready
