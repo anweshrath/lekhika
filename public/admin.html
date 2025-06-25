@@ -220,26 +220,7 @@
 Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.
 ABSOLUTELY NO CONVERSATIONAL TEXT OR PREAMBLE OUTSIDE THE JSON.`; // Added aggressive instruction
 
-        const defaultOpenAiPrompt = `You are LekhIkA, an expert AI copy alchemist. Analyze the user's marketing copy. Your response MUST be a valid JSON object ONLY. Do NOT include any introductory or concluding text, or any conversational filler outside the JSON. The JSON should strictly adhere to the following structure:
-
-{
-  "overallScore": [number, 0-100],
-  "feedbackMessage": [string, a concise feedback message based on the score],
-  "parameters": {
-    "readability": [number, 0-10],
-    "tone": [number, 0-10],
-    "engagement": [number, 0-10],
-    "impact": [number, 0-10],
-    "cta": [number, 0-10],
-    "confidence": [number, 0-10]
-  },
-  "suggestions": [
-    { "type": "improvement"|"tip"|"info", "text": "concise suggestion" }
-  ]
-}
-
-Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.
-YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`; // Added aggressive instruction
+        const defaultOpenAiPrompt = `You are LekhIkA, an expert AI copy alchemist. Analyze the user's marketing copy. Your response MUST be a valid JSON object ONLY. Do NOT include any introductory or concluding text, or any conversational filler outside the JSON. The JSON should strictly adhere to the following structure:\n\n{\n  "overallScore": [number, 0-100],\n  "feedbackMessage": [string, a concise feedback message based on the score],\n  "parameters": {\n    "readability": [number, 0-10],\n    "tone": [number, 0-10],\n    "engagement": [number, 0-10],\n    "impact": [number, 0-10],\n    "cta": [number, 0-10],\n    "confidence": [number, 0-10]\n  },\n  "suggestions": [\n    { "type": "improvement"|"tip"|"info", "text": "concise suggestion" }\n  ]\n}\n\nEnsure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.\nYOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`; // Added aggressive instruction
 
         const defaultConfig = {
             api: { geminiKey: '', openAiKey: '' },
@@ -262,34 +243,56 @@ YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`; // Added ag
         
         function populateForm(config) {
             console.log("[Admin UI] Populating form with config:", config);
-            for (const key in allFields) {
-                // IMPORTANT: DO NOT overwrite API key fields or adminSecretKey from server response.
-                // These are sensitive and not returned by the server. They should persist only user input.
-                if (key === 'geminiKey' || key === 'openAiKey' || key === 'adminSecretKey') {
-                    continue; 
-                }
 
-                let value;
-                // Directly map keys from config's sub-objects to the allFields elements
-                if (config.prompting && (key === 'geminiSystemPrompt' || key === 'openAiSystemPrompt')) {
-                    value = config.prompting[key];
-                } else if (config.model && (key === 'primaryModelProvider' || key === 'fallbackModelProvider' || key === 'geminiModelVersion' || key === 'openAiModelVersion')) {
-                    value = config.model[key];
-                } else if (config.ui) {
-                    value = config.ui[key];
-                }
-                
-                // Ensure value is not undefined before assigning, use default empty string
-                allFields[key].value = value || ''; 
+            // Explicitly set values for model configurations
+            if (config.model) {
+                allFields.primaryModelProvider.value = config.model.primaryProvider || defaultConfig.model.primaryProvider;
+                allFields.fallbackModelProvider.value = config.model.fallbackProvider || defaultConfig.model.fallbackProvider;
+                allFields.geminiModelVersion.value = config.model.geminiModelVersion || defaultConfig.model.geminiModelVersion;
+                allFields.openAiModelVersion.value = config.model.openAiModelVersion || defaultConfig.model.openAiModelVersion;
+            } else {
+                // Fallback to default if model config is missing
+                allFields.primaryModelProvider.value = defaultConfig.model.primaryProvider;
+                allFields.fallbackModelProvider.value = defaultConfig.model.fallbackProvider;
+                allFields.geminiModelVersion.value = defaultConfig.model.geminiModelVersion;
+                allFields.openAiModelVersion.value = defaultConfig.model.openAiModelVersion;
             }
+
+            // Explicitly set values for prompting configurations
+            if (config.prompting) {
+                allFields.geminiSystemPrompt.value = config.prompting.geminiSystemPrompt || defaultConfig.prompting.geminiSystemPrompt;
+                allFields.openAiSystemPrompt.value = config.prompting.openAiSystemPrompt || defaultConfig.prompting.openAiSystemPrompt;
+            } else {
+                // Fallback to default if prompting config is missing
+                allFields.geminiSystemPrompt.value = defaultConfig.prompting.geminiSystemPrompt;
+                allFields.openAiSystemPrompt.value = defaultConfig.prompting.openAiSystemPrompt;
+            }
+
+            // Explicitly set values for UI customizations
+            if (config.ui) {
+                allFields.mainTitle.value = config.ui.mainTitle || defaultConfig.ui.mainTitle;
+                allFields.styledName.value = config.ui.styledName || defaultConfig.ui.styledName;
+                allFields.subtitle.value = config.ui.subtitle || defaultConfig.ui.subtitle;
+                allFields.logoUrl.value = config.ui.logoUrl || defaultConfig.ui.logoUrl;
+            } else {
+                // Fallback to default if UI config is missing
+                allFields.mainTitle.value = defaultConfig.ui.mainTitle;
+                allFields.styledName.value = defaultConfig.ui.styledName;
+                allFields.subtitle.value = defaultConfig.ui.subtitle;
+                allFields.logoUrl.value = defaultConfig.ui.logoUrl;
+            }
+            
+            // API keys and adminSecretKey are INTENTIONALLY NOT re-populated for security.
+            // They persist only from user input within the session, or for passing to backend.
+            // The values are stored in KV, but not displayed back in the UI.
+
             // --- NEW LOGIC TO FORCE DEFAULT STRICT PROMPTS IF OLD ONES ARE LOADED ---
             // This ensures the user sees and can save the strict prompts, even if KV held old ones.
-            // Check length as a proxy for old prompt. If it's the short one, force the long one.
-            if (allFields.geminiSystemPrompt.value.length < 150 && allFields.geminiSystemPrompt.value !== defaultConfig.prompting.geminiSystemPrompt) { 
+            if (allFields.geminiSystemPrompt.value.indexOf("ABSOLUTELY NO CONVERSATIONAL TEXT OR PREAMBLE OUTSIDE THE JSON.") === -1) { 
                 allFields.geminiSystemPrompt.value = defaultConfig.prompting.geminiSystemPrompt;
                 console.log("[Admin UI] Forced Gemini System Prompt to new strict default.");
             }
-            if (allFields.openAiSystemPrompt.value.length < 150 && allFields.openAiSystemPrompt.value !== defaultConfig.prompting.openAiSystemPrompt) { 
+            if (allFields.openAiSystemPrompt.value.indexOf("YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.") === -1) { 
                 allFields.openAiSystemPrompt.value = defaultConfig.prompting.openAiSystemPrompt;
                 console.log("[Admin UI] Forced OpenAI System Prompt to new strict default.");
             }
@@ -310,11 +313,11 @@ YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`; // Added ag
 
             try {
                 const response = await fetch('/api/config');
-                let configToLoad = defaultConfig;
+                let configToLoad = defaultConfig; // Start with default to ensure all properties exist
                 if(response.ok) {
                     const serverConfig = await response.json();
                     console.log("[Admin UI] Server returned config (ok):", JSON.stringify(serverConfig, null, 2)); // Log the received config
-                    // Merge server config with default to ensure all keys exist
+                    // Merge server config with default for existing properties
                     configToLoad = {
                         model: {...defaultConfig.model, ...(serverConfig.model || {})},
                         ui: {...defaultConfig.ui, ...(serverConfig.ui || {})},
@@ -327,7 +330,7 @@ YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`; // Added ag
                     saveStatus.style.color = '#f87171';
                     saveStatus.textContent = `Error loading config: ${errorData.error || 'Unknown error'}. Using defaults.`;
                     setTimeout(() => saveStatus.textContent = '', 7000);
-                    // Still use defaultConfig merged, so fields aren't completely blank
+                    // Fallback to hardcoded defaults on network error or 404
                     configToLoad = {
                         model: {...defaultConfig.model},
                         ui: {...defaultConfig.ui},
@@ -419,7 +422,7 @@ YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`; // Added ag
             passwordChangeStatus.style.color = '#4ade80'; passwordChangeStatus.textContent = 'Password changed successfully!';
             currentPasswordEl.value = ''; newPasswordEl.value = ''; confirmNewPasswordEl.value = '';
         }
-        function handleTabClick(e) { if (!e.target.matches('.tab')) return; document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active')); e.target.classList.add('active'); const tabContent = e.target.dataset.tab; document.getElementById('gemini-prompt-content').classList.toggle('hidden', tabContent !== 'gemini'); document.getElementById('openai-prompt-content').classList.toggle('hidden', tabContent !== 'openai'); }
+        function handleTabClick(e) { if (!e.target.matches('.tab')) return; document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active')); e.target.classList.remove('active'); e.target.classList.add('active'); const tabContent = e.target.dataset.tab; document.getElementById('gemini-prompt-content').classList.toggle('hidden', tabContent !== 'gemini'); document.getElementById('openai-prompt-content').classList.toggle('hidden', tabContent !== 'openai'); }
         function exportSettings() {
             const settingsString = JSON.stringify({
                 api: { geminiKey: allFields.geminiKey.value, openAiKey: allFields.openAiKey.value },
@@ -444,8 +447,8 @@ YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`; // Added ag
                         allFields.fallbackModelProvider.value = importedConfig.model.fallbackModelProvider || 'openai';
                         allFields.geminiModelVersion.value = importedConfig.model.geminiModelVersion || 'gemini-1.5-flash-latest';
                         allFields.openAiModelVersion.value = importedConfig.model.openAiModelVersion || 'gpt-4o';
-                        allFields.geminiSystemPrompt.value = importedConfig.prompting.geminiSystemPrompt || defaultPrompt;
-                        allFields.openAiSystemPrompt.value = importedConfig.prompting.openAiSystemPrompt || defaultPrompt;
+                        allFields.geminiSystemPrompt.value = importedConfig.prompting.geminiSystemPrompt || defaultConfig.prompting.geminiSystemPrompt; // Use defaultConfig prompts here
+                        allFields.openAiSystemPrompt.value = importedConfig.prompting.openAiSystemPrompt || defaultConfig.prompting.openAiSystemPrompt; // Use defaultConfig prompts here
                         allFields.mainTitle.value = importedConfig.ui.mainTitle || defaultConfig.ui.mainTitle;
                         allFields.styledName.value = importedConfig.ui.styledName || defaultConfig.ui.styledName;
                         allFields.subtitle.value = importedConfig.ui.subtitle || defaultConfig.ui.subtitle;
