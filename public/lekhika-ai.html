@@ -497,7 +497,7 @@
 
                 <div class="lg:col-span-5 flex flex-col items-center space-y-4 sm:space-y-6 p-4 sm:p-6 rounded-xl shadow-2xl persona-card-magical">
                     <div class="flex items-center space-x-3 sm:space-x-4">
-                        <img id="lekhikaImage" src="https://copyalche.my/premium/lekhika-ai-logo-close.png" alt="LekhIkA AI Assistant" class="lekhika-avatar w-16 h-16 sm:w-20 md:w-24 sm:h-20 md:h-24 rounded-full border-4 border-purple-400/70 shadow-lg object-cover">
+                        <img id="lekhikaImage" src="https://www.copyalche.my/premium/lekhika/lekhika1.png" alt="LekhIkA AI Assistant" class="lekhika-avatar w-16 h-16 sm:w-20 md:w-24 sm:h-20 md:h-24 rounded-full border-4 border-purple-400/70 shadow-lg object-cover">
                         <div>
                             <h2 class="text-base sm:text-lg md:text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-300 to-orange-300">LekhIkA</h2>
                             <p class="text-xs sm:text-sm text-slate-300">Your Copy Alchemist</p>
@@ -611,7 +611,7 @@ YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`;
             api: { geminiKey: '', openAiKey: '' }, // API keys are not directly used in the UI, but part of config structure
             model: { primaryProvider: 'gemini', fallbackProvider: 'openai', geminiModelVersion: 'gemini-1.5-flash-latest', openAiModelVersion: 'gpt-4o' },
             prompting: { geminiSystemPrompt: defaultGeminiPrompt, openAiSystemPrompt: defaultOpenAiPrompt },
-            ui: { mainTitle: "CopyAlchemist's Assistant - ", styledName: "LekhIkA", subtitle: "Your AI partner for crafting compelling, high-conversion copy.", logoUrl: "https://copyalche.my/premium/lekhika-ai-logo-close.png" }
+            ui: { mainTitle: "CopyAlchemist's Assistant - ", styledName: "LekhIkA", subtitle: "Your AI partner for crafting compelling, high-conversion copy.", logoUrl: "https://www.copyalche.my/premium/lekhika/lekhika1.png" }
         };
 
         // --- All your original element references ---
@@ -735,8 +735,8 @@ YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`;
                         document.getElementById('mainTitle').firstChild.textContent = "CopyAlchemist's Assistant - ";
                         document.getElementById('styledName').textContent = "LekhIkA";
                         document.getElementById('subtitle').textContent = "Your AI partner for crafting compelling, high-conversion copy.";
-                        document.getElementById('lekhikaImage').src = "https://copyalche.my/premium/lekhika-ai-logo-close.png";
-                        document.documentElement.style.setProperty('--lekhika-bg-logo-url', `url('https://copyalche.my/premium/lekhika-ai-logo-close.png')`);
+                        document.getElementById('lekhikaImage').src = "https://www.copyalche.my/premium/lekhika/lekhika1.png";
+                        document.documentElement.style.setProperty('--lekhika-bg-logo-url', `url('https://www.copyalche.my/premium/lekhika/lekhika1.png')`);
                     }
                     
                     /* Initialize parameters UI for AI analysis */
