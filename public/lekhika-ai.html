@@ -6,8 +6,8 @@
     <title>CopyAlchemist's Assistant - LekhIkA (AI-Powered)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Phosphor Icons for a modern look (for hamburger/close icons) -->
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js"></script>
+    <!-- Phosphor Icons: Ensure this script loads correctly for icons to display -->
+    <script async src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js"></script>
     <style>
         /* Base styling for the main content card */
         #copy-alchemist-lekhika {
@@ -74,14 +74,32 @@
             background-image: var(--lekhika-bg-logo-url);
             background-repeat: no-repeat;
             background-size: auto 50vh;
-            background-position: -10vh center;
+            background-position: calc(50% + var(--parallax-scroll-y) / 2) calc(50% + var(--parallax-scroll-y) * -0.15); /* More complex parallax */
             opacity: 0.25;
             z-index: -1;
             pointer-events: none;
             transition: background-position 0.3s ease-out, background-size 0.3s ease-out;
-            transform: translateY(var(--parallax-scroll-y)); /* Apply parallax effect */
             will-change: transform; /* Hint to browser for smooth animation */
         }
+        /* Subtle animated grid overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(0deg, transparent 24%, rgba(0, 255, 255, 0.03) 25%, rgba(0, 255, 255, 0.03) 26%, transparent 27%), linear-gradient(90deg, transparent 24%, rgba(0, 255, 255, 0.03) 25%, rgba(0, 255, 255, 0.03) 26%, transparent 27%);
+            background-size: 50px 50px;
+            opacity: 0.8;
+            z-index: -2;
+            animation: grid-pan 120s linear infinite;
+        }
+        @keyframes grid-pan {
+            from { background-position: 0 0; }
+            to { background-position: -5000px -5000px; }
+        }
+
 
         /* Sticky header styling */
         header.sticky-header {
@@ -112,21 +130,23 @@
             color: var(--text-secondary); /* Muted initial color */
             padding: 0.5rem 0;
             font-weight: 500; /* Medium weight */
+            text-shadow: 0 0 5px rgba(255,255,255,0.05); /* Subtle default text shadow */
         }
         header.sticky-header .nav-link:hover {
             color: var(--premium-accent); /* Bright accent on hover */
             transform: translateY(-2px); /* Slight lift */
-            text-shadow: 0 0 8px rgba(0, 255, 255, 0.4); /* Text glow */
+            text-shadow: 0 0 12px rgba(0, 255, 255, 0.6), 0 0 20px rgba(0, 255, 255, 0.3); /* Stronger text glow */
         }
         header.sticky-header .nav-link::after {
             content: '';
             position: absolute;
             width: 0;
-            height: 2px;
-            bottom: -6px; /* Adjusted position */
+            height: 3px; /* Thicker underline */
+            bottom: -8px; /* Adjusted position */
             left: 50%;
             transform: translateX(-50%);
-            background-color: var(--premium-accent);
+            background: linear-gradient(to right, var(--premium-accent-dark), var(--premium-accent)); /* Gradient underline */
+            box-shadow: 0 0 10px var(--premium-accent); /* Glow on underline */
             transition: width 0.3s ease;
         }
         header.sticky-header .nav-link:hover::after {
@@ -149,26 +169,30 @@
             box-shadow: 0 8px 20px rgba(0, 255, 255, 0.15), 0 4px 10px rgba(0,0,0,0.3);
             transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
             transform: translateY(-100%);
-            display: none;
+            display: none; /* Hidden by default for JS toggle */
             overflow-y: auto; /* Enable scrolling for many menu items */
+            border-bottom-left-radius: 1.5rem; /* Rounded bottom corners */
+            border-bottom-right-radius: 1.5rem;
         }
         #mobileMenu.show {
             transform: translateY(0%);
-            display: flex;
+            display: flex; /* Show using flex for column layout */
         }
         #mobileMenu a {
             display: block;
             padding: 1rem 1.5rem; /* Larger touch targets */
             margin-bottom: 0.5rem; /* Spacing between items */
-            border-radius: 0.5rem;
+            border-radius: 0.75rem; /* More rounded */
             transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-            font-size: 1.125rem; /* Larger font */
+            font-size: 1.25rem; /* Larger font */
             font-weight: 500;
+            text-shadow: 0 0 5px rgba(255,255,255,0.1);
         }
         #mobileMenu a:hover {
             color: var(--premium-accent);
-            background-color: rgba(0, 255, 255, 0.1); /* More distinct hover */
-            transform: translateX(5px); /* Slight slide effect */
+            background-color: rgba(0, 255, 255, 0.12); /* More distinct hover */
+            transform: translateX(8px); /* More pronounced slide effect */
+            text-shadow: 0 0 10px rgba(0,255,255,0.6);
         }
 
         /* Main section container centering and sizing */
@@ -215,6 +239,12 @@
         }
 
         /* Parameter bars */
+        .parameter-card-wrapper {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: popInAdvanced 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: var(--delay); /* Use CSS variable for staggered delay */
+        }
         .parameter-bar-bg { background-color: #334155; border-radius: 9999px; } /* Ensure rounded */
         .parameter-bar-fg {
             transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1), background-color 0.5s ease;
@@ -229,11 +259,13 @@
             opacity: 0;
             transform: translateY(20px);
             animation: popInAdvanced 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: var(--delay); /* Staggered animation using CSS variable */
             transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out, border-color 0.3s ease-out;
             cursor: pointer;
             border: 1px solid transparent; /* Default transparent border */
             background-color: rgba(30, 41, 59, 0.6); /* Slightly more transparent */
             padding: 1.25rem; /* More padding */
+            border-radius: 0.75rem; /* More rounded corners for elegance */
         }
         .suggestion-item:hover {
             transform: translateY(-5px) scale(1.02); /* More pronounced lift and slight scale */
@@ -288,6 +320,7 @@
             background: linear-gradient(145deg, rgba(25, 36, 58, 0.7), rgba(40, 51, 70, 0.6));
             backdrop-filter: blur(8px); /* Stronger blur */
             padding: 1.5rem; /* More internal padding */
+            border-radius: 1.5rem; /* More rounded for elegance */
         }
         @keyframes pulseCardBorderGlowPremium {
             from { box-shadow: 0 0 25px rgba(0, 255, 255, 0.2), 0 0 50px rgba(0, 255, 255, 0.15); border-color: rgba(0, 255, 255, 0.3); }
@@ -304,6 +337,7 @@
             font-size: 1.125rem; /* Larger font size */
             line-height: 1.6; /* Improved readability */
             padding: 1rem; /* More padding */
+            border-radius: 0.75rem; /* More rounded */
         }
         #copyInput:focus {
             background-color: rgba(30, 41, 59, 1);
@@ -312,37 +346,66 @@
             color: #f8fafc;
         }
         /* Titles with gradients */
-        .futuristic-title span { background-image: linear-gradient(to right, var(--premium-accent), #c084fc, #f472b6); }
-        .text-gradient-lekhika { background-image: linear-gradient(to right, #a78bfa, #c084fc, #f472b6); } /* For Lekhika in persona card */
-        .text-gradient-suggestions { background-image: linear-gradient(to right, #indigo-400, #purple-400, #pink-400); } /* Consistent with suggestions title */
+        .futuristic-title {
+            font-size: 3rem; /* Larger main title */
+            letter-spacing: -0.05em; /* Tighter letter spacing */
+            line-height: 1.1;
+            text-shadow: 0 0 10px rgba(0,255,255,0.2), 0 0 20px rgba(129,140,248,0.1); /* Subtle shadow */
+        }
+        .futuristic-title span {
+            background-image: linear-gradient(to right, var(--premium-accent), #a78bfa, #c084fc, #f472b6); /* Broader gradient */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700; /* Bold LekhIkA name */
+            transition: all 0.3s ease;
+        }
+        .futuristic-title span:hover {
+            transform: scale(1.05); /* Slight scale on hover for name */
+            text-shadow: 0 0 15px rgba(0,255,255,0.5), 0 0 30px rgba(129,140,248,0.4);
+        }
+
+        .text-gradient-lekhika { /* For Lekhika in persona card */
+            background-image: linear-gradient(to right, #a78bfa, #c084fc, #f472b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .text-gradient-suggestions { /* Consistent with suggestions title */
+            background-image: linear-gradient(to right, #indigo-400, #purple-400, #pink-400);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
 
 
         /* CTA and AI Button Styling */
         .cta-button, .ai-button {
             display: inline-block;
-            padding: 0.85rem 2.5rem; /* Larger button */
-            font-size: 1rem; /* Slightly larger font */
+            padding: 0.95rem 2.75rem; /* Even larger button */
+            font-size: 1.05rem; /* Slightly larger font */
             font-weight: 700; /* Bold */
             color: var(--bg-dark); /* Dark text for contrast on bright button */
             background-image: linear-gradient(to right, var(--premium-accent) 0%, #818cf8 50%, var(--premium-accent) 100%);
             background-size: 200% auto;
             border: none;
-            border-radius: 0.6rem; /* More rounded */
-            box-shadow: 0 6px 20px 0 rgba(0, 255, 255, 0.45); /* Stronger initial shadow */
+            border-radius: 0.75rem; /* Even more rounded */
+            box-shadow: 0 8px 25px 0 rgba(0, 255, 255, 0.55); /* Stronger initial shadow */
             transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
             text-transform: uppercase;
-            letter-spacing: 0.08em; /* More spacing */
+            letter-spacing: 0.1em; /* More spacing */
             cursor: pointer;
             position: relative;
             overflow: hidden;
             z-index: 1;
-            transform: translateY(0); /* Ensure no initial transform issues */
+            transform: translateY(0);
+            will-change: transform, box-shadow; /* Optimize for animation */
         }
         .cta-button:hover, .ai-button:hover {
             background-position: right center;
-            box-shadow: 0 8px 25px 0 rgba(129, 140, 248, 0.6), 0 0 30px var(--premium-accent); /* Stronger hover glow */
-            transform: translateY(-4px) scale(1.02); /* More pronounced lift */
-            letter-spacing: 0.1em; /* Subtle letter spacing animation */
+            box-shadow: 0 10px 30px 0 rgba(129, 140, 248, 0.7), 0 0 40px var(--premium-accent); /* Stronger hover glow */
+            transform: translateY(-6px) scale(1.03); /* More pronounced lift */
+            letter-spacing: 0.12em; /* Subtle letter spacing animation */
         }
         .ai-button:disabled {
             cursor: not-allowed;
@@ -351,6 +414,7 @@
             box-shadow: none;
             transform: none;
             opacity: 0.7;
+            letter-spacing: 0.08em; /* Reset letter spacing for disabled */
         }
 
         .cta-button::before, .ai-button::before {
@@ -360,7 +424,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 70%); /* Stronger shine */
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%); /* Stronger shine */
             transform: rotate(45deg);
             transition: opacity 0.5s ease;
             opacity: 0;
@@ -393,8 +457,9 @@
                 </a>
             </div>
             <button id="menuBtn" class="md:hidden focus:outline-none p-2 rounded-md hover:bg-gray-700/50 transition-colors">
-                <i class="ph-bold ph-list text-3xl" id="hamburgerIcon"></i>
-                <i class="ph-bold ph-x text-3xl hidden" id="closeIcon"></i>
+                <!-- Phosphor Icons for hamburger and close -->
+                <i class="ph-bold ph-list text-3xl text-white" id="hamburgerIcon"></i>
+                <i class="ph-bold ph-x text-3xl text-white hidden" id="closeIcon"></i>
             </button>
             <nav class="hidden md:flex space-x-6 lg:space-x-8 text-sm font-semibold items-center h-full">
                 <a href="/" class="nav-link">Home</a>
@@ -790,7 +855,7 @@
         function initializeParametersUI(params) {
             parametersContainer.innerHTML = ''; /* Clear existing parameters */
             params.forEach((param, index) => {
-                const paramElement = `<div class="parameter-card bg-slate-700 p-2.5 sm:p-3 md:p-4 rounded-lg sm:rounded-xl shadow-md hover:shadow-lg border border-slate-600/80" style="animation: popInAdvanced 0.6s ease-out ${index * 100 + 200}ms forwards; opacity:0; transform: perspective(500px) translateZ(-30px) translateY(15px);"><div class="flex items-center justify-between mb-1.5 sm:mb-2"><div class="flex items-center space-x-1.5 sm:space-x-2"><span class="text-[var(--premium-accent)]">${param.icon || ''}</span><h4 class="text-xs sm:text-sm font-semibold text-slate-200">${param.name}</h4></div><span id="${param.id}ScoreText" class="text-[10px] sm:text-xs font-bold text-[var(--premium-accent)] bg-[var(--premium-accent-dark)]/30 px-1.5 sm:px-2 py-0.5 rounded-full">0/10</span></div><div class="parameter-bar-bg w-full h-2 sm:h-2.5 md:h-3 rounded-full overflow-hidden"><div id="${param.id}Bar" class="parameter-bar-fg h-2 sm:h-2.5 md:h-3 rounded-full"></div></div></div>`;
+                const paramElement = `<div class="parameter-card-wrapper" style="--delay: ${index * 100 + 200}ms;"><div class="parameter-card bg-slate-700 p-2.5 sm:p-3 md:p-4 rounded-lg sm:rounded-xl shadow-md hover:shadow-lg border border-slate-600/80"><div class="flex items-center justify-between mb-1.5 sm:mb-2"><div class="flex items-center space-x-1.5 sm:space-x-2"><span class="text-[var(--premium-accent)]">${param.icon || ''}</span><h4 class="text-xs sm:text-sm font-semibold text-slate-200">${param.name}</h4></div><span id="${param.id}ScoreText" class="text-[10px] sm:text-xs font-bold text-[var(--premium-accent)] bg-[var(--premium-accent-dark)]/30 px-1.5 sm:px-2 py-0.5 rounded-full">0/10</span></div><div class="parameter-bar-bg w-full h-2 sm:h-2.5 md:h-3 rounded-full overflow-hidden"><div id="${param.id}Bar" class="parameter-bar-fg h-2 sm:h-2.5 md:h-3 rounded-full"></div></div></div></div>`;
                 parametersContainer.insertAdjacentHTML('beforeend', paramElement);
             });
             console.log("[Lekhika UI] Parameters UI initialized.");
@@ -1040,7 +1105,7 @@
 
                 const suggEl = document.createElement('div');
                 suggEl.className = `suggestion-item ${typeC} flex items-start p-2.5 sm:p-3 rounded-lg shadow-sm transition-all duration-300`;
-                suggEl.style.animationDelay = `${i * 70}ms`; /* Staggered animation */
+                suggEl.style.setProperty('--delay', `${i * 70}ms`); /* Staggered animation using CSS variable */
 
                 const iconSpan = document.createElement('span');
                 iconSpan.className = `${iconCC} mr-2 sm:mr-2.5 mt-0.5`;
