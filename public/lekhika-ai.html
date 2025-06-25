@@ -559,6 +559,61 @@
     document.addEventListener('DOMContentLoaded', () => {
         let lekhikaConfig; // This will store the configuration fetched from the API
 
+        // Define defaultConfig here, as it was missing and caused the error
+        // These prompts are critical for structured JSON output from the AI models.
+        const defaultGeminiPrompt = `You are LekhIkA, an expert AI copy alchemist. Your task is to analyze marketing copy provided by the user. Respond ONLY with a JSON object. Do NOT include any conversational text or explanations outside the JSON. The JSON must contain the following keys and structure:
+
+{
+  "overallScore": [number, 0-100],
+  "feedbackMessage": [string, a concise feedback message based on the score],
+  "parameters": {
+    "readability": [number, 0-10],
+    "tone": [number, 0-10],
+    "engagement": [number, 0-10],
+    "impact": [number, 0-10],
+    "cta": [number, 0-10],
+    "confidence": [number, 0-10]
+  },
+  "suggestions": [
+    { "type": "improvement"|"tip"|"info", "text": "concise suggestion" }
+  ]
+}
+
+Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.
+For 'improvement' suggestions, sometimes (e.g., 1 in 3 suggestions), phrase it like: 'My Boss Anwesh would suggest replacing "[original word/phrase]" with "[better word/phrase]" to [reason for improvement].'
+Always explicitly mention the original word or phrase that needs to be replaced in improvement suggestions.
+ABSOLUTELY NO CONVERSATIONAL TEXT OR PREAMBLE OUTSIDE THE JSON.`;
+
+        const defaultOpenAiPrompt = `You are LekhIkA, an expert AI copy alchemist. Analyze the user's marketing copy. Your response MUST be a valid JSON object ONLY. Do NOT include any introductory or concluding text, or any conversational filler outside the JSON. The JSON should strictly adhere to the following structure:
+
+{
+  "overallScore": [number, 0-100],
+  "feedbackMessage": [string, a concise feedback message based on the score],
+  "parameters": {
+    "readability": [number, 0-10],
+    "tone": [number, 0-10],
+    "engagement": [number, 0-10],
+    "impact": [number, 0-10],
+    "cta": [number, 0-10],
+    "confidence": [number, 0-10]
+  },
+  "suggestions": [
+    { "type": "improvement"|"tip"|"info", "text": "concise suggestion" }
+  ]
+}
+
+Ensure all parameter scores are integers from 0 to 10. The 'type' in suggestions should only be 'improvement', 'tip', or 'info'.
+For 'improvement' suggestions, sometimes (e.g., 1 in 3 suggestions), phrase it like: 'My Boss Anwesh would suggest replacing "[original word/phrase]" with "[better word/phrase]" to [reason for improvement].'
+Always explicitly mention the original word or phrase that needs to be replaced in improvement suggestions.
+YOUR RESPONSE MUST START WITH '{' AND END WITH '}'. NO EXCEPTIONS.`;
+
+        const defaultConfig = {
+            api: { geminiKey: '', openAiKey: '' }, // API keys are not directly used in the UI, but part of config structure
+            model: { primaryProvider: 'gemini', fallbackProvider: 'openai', geminiModelVersion: 'gemini-1.5-flash-latest', openAiModelVersion: 'gpt-4o' },
+            prompting: { geminiSystemPrompt: defaultGeminiPrompt, openAiSystemPrompt: defaultOpenAiPrompt },
+            ui: { mainTitle: "CopyAlchemist's Assistant - ", styledName: "LekhIkA", subtitle: "Your AI partner for crafting compelling, high-conversion copy.", logoUrl: "https://copyalche.my/premium/lekhika-ai-logo-close.png" }
+        };
+
         // --- All your original element references ---
         const copyInput = document.getElementById('copyInput');
         const scoreText = document.getElementById('scoreText');
@@ -569,7 +624,7 @@
         const analyzeBtn = document.getElementById('analyzeBtn'); // New button for AI analysis
         const lekhikaImage = document.getElementById('lekhikaImage');
         const hamburgerIcon = document.getElementById('hamburgerIcon'); // Added
-        const closeIcon = document.getElementById('closeIcon');     // Added
+        const closeIcon = document.getElementById('closeIcon');      // Added
         const CIRCUMFERENCE = 2 * Math.PI * 40;
 
         // --- Original local configuration and databases (will only be used if API fails or running locally) ---
@@ -710,8 +765,8 @@
             /* Mobile menu toggle logic */
             const menuBtn = document.getElementById('menuBtn');
             const mobileMenu = document.getElementById('mobileMenu');
-            const hamburgerIcon = document.getElementById('hamburgerIcon'); 
-            const closeIcon = document.getElementById('closeIcon');     
+            const hamburgerIcon = document.getElementById('hamburgerIcon');
+            const closeIcon = document.getElementById('closeIcon');
             
             if (menuBtn && mobileMenu && hamburgerIcon && closeIcon) { /* Ensure icons exist */
                 menuBtn.addEventListener('click', () => {
@@ -756,8 +811,8 @@
                 return;
             }
 
-            const primaryProvider = lekhikaConfig.model.primaryProvider; 
-            const fallbackProvider = lekhikaConfig.model.fallbackProvider; 
+            const primaryProvider = lekhikaConfig.model.primaryProvider;
+            const fallbackProvider = lekhikaConfig.model.fallbackProvider;
 
             try {
                 console.log(`[Lekhika UI] Attempting analysis with primary provider: ${primaryProvider}`);
