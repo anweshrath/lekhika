@@ -18,7 +18,12 @@ module.exports = async function handler(request, response) {
     const receivedAuthToken = authHeader ? authHeader.split(' ')[1] : 'No Token';
 
     console.log(`[API Config POST] AdminSecret from env: ${adminSecret ? 'SET' : 'NOT SET'}, Received Auth Header: ${receivedAuthToken}`);
+// Add these 3 lines
+console.log('[API Config POST] receivedAuthToken:', authHeader);
+console.log('[API Config POST] process.env.ADMIN_SECRET:', process.env.ADMIN_SECRET);
+console.log('[API Config POST] Comparison:', authHeader === 'Bearer ' + process.env.ADMIN_SECRET);
 
+if (adminSecret) { // This line is already there, don't change it
     if (!adminSecret || authHeader !== `Bearer ${adminSecret}`) {
       console.error(`[API Config POST ERROR] Unauthorized access attempt. Expected: Bearer ${adminSecret}, Received: ${authHeader}.`);
       return response.status(401).json({ error: 'Unauthorized: Admin Secret Key mismatch or missing.' });
