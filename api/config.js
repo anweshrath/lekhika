@@ -13,17 +13,18 @@ module.exports = async function handler(request, response) {
 
   // --- Handle POST request (from admin panel to save config) ---
   if (request.method === 'POST') {
-    const adminSecret = process.env.ADMIN_SECRET_KEY;
+    // FIX 1: Changed from ADMIN_SECRET_KEY to ADMIN_SECRET for consistency with admin.html and Vercel env var name
+    const adminSecret = process.env.ADMIN_SECRET;
     const authHeader = request.headers['authorization'];
     const receivedAuthToken = authHeader ? authHeader.split(' ')[1] : 'No Token';
 
     console.log(`[API Config POST] AdminSecret from env: ${adminSecret ? 'SET' : 'NOT SET'}, Received Auth Header: ${receivedAuthToken}`);
-// Add these 3 lines
-console.log('[API Config POST] receivedAuthToken:', authHeader);
-console.log('[API Config POST] process.env.ADMIN_SECRET:', process.env.ADMIN_SECRET);
-console.log('[API Config POST] Comparison:', authHeader === 'Bearer ' + process.env.ADMIN_SECRET);
+    // Your added logging lines (kept for debugging)
+    console.log('[API Config POST] receivedAuthToken (full header):', authHeader);
+    console.log('[API Config POST] process.env.ADMIN_SECRET (from Vercel):', process.env.ADMIN_SECRET);
+    console.log('[API Config POST] Comparison (Bearer + Vercel Secret === Received Header):', authHeader === 'Bearer ' + process.env.ADMIN_SECRET);
 
-if (adminSecret) { // This line is already there, don't change it
+
     if (!adminSecret || authHeader !== `Bearer ${adminSecret}`) {
       console.error(`[API Config POST ERROR] Unauthorized access attempt. Expected: Bearer ${adminSecret}, Received: ${authHeader}.`);
       return response.status(401).json({ error: 'Unauthorized: Admin Secret Key mismatch or missing.' });
@@ -39,7 +40,7 @@ if (adminSecret) { // This line is already there, don't change it
       console.error('[API Config POST ERROR] Error SAVING configuration to KV:', error.message, error.stack);
       return response.status(500).json({ error: `Failed to save configuration to database. Server log: ${error.message}` });
     }
-  }
+  } // FIX 2: Added this missing closing brace for the POST method block
 
   // --- Handle GET request (from Lekhika tool to load config) ---
   if (request.method === 'GET') {
@@ -47,7 +48,7 @@ if (adminSecret) { // This line is already there, don't change it
     try {
       const fullConfig = await kv.get(CONFIG_KEY);
       console.log("[API Config GET] Fetched raw config from KV:", fullConfig ? 'Data Found' : 'No Data');
-      
+
       if (!fullConfig) {
         console.warn("[API Config GET WARNING] Configuration not found in KV. Returning 404.");
         return response.status(404).json({ error: 'Configuration not found. Please save settings in the admin panel first.' });
