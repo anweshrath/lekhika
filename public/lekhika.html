@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LekhIkA - AI Copy Alchemist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+        }
+
+        .input-section h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .word-count {
+            text-align: right;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .results-section {
+            grid-column: 1 / -1;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #4facfe 0deg, #4facfe 0deg, #e0e0e0 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            position: relative;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .score-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .parameters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .parameter-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .parameter-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .parameter-name {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .parameter-score {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .word-suggestions {
+            margin-top: 30px;
+        }
+
+        .suggestion-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .suggestion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .suggestion-category {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .suggestion-impact {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .suggestion-content {
+            margin-bottom: 10px;
+        }
+
+        .original-word {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        .suggested-words {
+            color: #51cf66;
+            font-weight: 600;
+        }
+
+        .suggestion-reason {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .suggestion-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        .humanize-section {
+            grid-column: 1 / -1;
+            margin-top: 30px;
+        }
+
+        .humanize-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .humanize-option {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .humanize-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .humanize-option.selected {
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .ai-insights {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .ai-insights h3 {
+            margin-bottom: 15px;
+            color: #4facfe;
+        }
+
+        .ai-insights p {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .parameters-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🚀 LekhIkA</h1>
+            <p>AI-Powered Copy Analysis & Humanization Platform</p>
+        </div>
+
+        <div class="main-content">
+            <div class="glass-card input-section">
+                <h2>📝 Enter Your Copy</h2>
+                
+                <div class="form-group">
+                    <label for="copyText">Copy Text</label>
+                    <textarea id="copyText" rows="8" placeholder="Paste your copy here..."></textarea>
+                    <div class="word-count" id="wordCount">0 words</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="copyType">Copy Type</label>
+                    <select id="copyType">
+                        <option value="general">General</option>
+                        <option value="email">Email Marketing</option>
+                        <option value="sales">Sales Page</option>
+                        <option value="social">Social Media</option>
+                        <option value="landing">Landing Page</option>
+                        <option value="blog">Blog Post</option>
+                        <option value="ad">Advertisement</option>
+                        <option value="product">Product Description</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="analyzeCopy()">🔍 Analyze Copy</button>
+                <button class="btn btn-secondary" onclick="clearAll()">🗑️ Clear</button>
+            </div>
+
+            <div class="glass-card">
+                <h2>🎯 Quick Actions</h2>
+                
+                <div class="humanize-options">
+                    <div class="humanize-option" onclick="selectTone('professional')">
+                        <h3>👔 Professional</h3>
+                        <p>Business-like tone</p>
+                    </div>
+                    <div class="humanize-option" onclick="selectTone('casual')">
+                        <h3>😊 Casual</h3>
+                        <p>Friendly & relaxed</p>
+                    </div>
+                    <div class="humanize-option" onclick="selectTone('friendly')">
+                        <h3>🤝 Friendly</h3>
+                        <p>Warm & approachable</p>
+                    </div>
+                    <div class="humanize-option" onclick="selectTone('urgent')">
+                        <h3>⚡ Urgent</h3>
+                        <p>Time-sensitive</p>
+                    </div>
+                </div>
+
+                <button class="btn btn-success" onclick="humanizeCopy()">✨ Humanize Copy</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing your copy...</p>
+        </div>
+
+        <div class="glass-card results-section" id="results" style="display: none;">
+            <h2>📊 Analysis Results</h2>
+            
+            <div class="score-circle" id="scoreCircle">
+                <div class="score-text" id="scoreText">0</div>
+            </div>
+
+            <div class="parameters-grid" id="parametersGrid"></div>
+
+            <div class="ai-insights" id="aiInsights"></div>
+
+            <div class="word-suggestions" id="wordSuggestions"></div>
+
+            <div class="humanize-section" id="humanizeSection" style="display: none;">
+                <h2>✨ Humanized Version</h2>
+                <div id="humanizedText"></div>
+                <div id="humanizeImprovements"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedTone = 'professional';
+        let currentAnalysis = null;
+
+        // Word count update
+        document.getElementById('copyText').addEventListener('input', function() {
+            const words = this.value.trim().split(/\s+/).filter(word => word.length > 0);
+            document.getElementById('wordCount').textContent = `${words.length} words`;
+        });
+
+        // Tone selection
+        function selectTone(tone) {
+            selectedTone = tone;
+            document.querySelectorAll('.humanize-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.closest('.humanize-option').classList.add('selected');
+        }
+
+        // Analyze copy
+        async function analyzeCopy() {
+            const copyText = document.getElementById('copyText').value.trim();
+            const copyType = document.getElementById('copyType').value;
+
+            if (!copyText) {
+                alert('Please enter some copy to analyze');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ copyText, copyType })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentAnalysis = data;
+                    displayResults(data);
+                } else {
+                    alert('Analysis failed: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error analyzing copy: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Display results
+        function displayResults(data) {
+            const results = document.getElementById('results');
+            results.style.display = 'block';
+
+            // Calculate overall score
+            const scores = Object.values(data.metrics);
+            const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+            
+            // Update score circle
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreText = document.getElementById('scoreText');
+            const percentage = (avgScore / 10) * 100;
+            
+            scoreCircle.style.background = `conic-gradient(from 0deg, #4facfe 0deg, #4facfe ${percentage * 3.6}deg, #e0e0e0 ${percentage * 3.6}deg)`;
+            scoreText.textContent = Math.round(avgScore);
+
+            // Display parameters
+            const parametersGrid = document.getElementById('parametersGrid');
+            parametersGrid.innerHTML = '';
+
+            Object.entries(data.metrics).forEach(([key, value]) => {
+                const card = document.createElement('div');
+                card.className = 'parameter-card';
+                card.innerHTML = `
+                    <div class="parameter-name">${key.charAt(0).toUpperCase() + key.slice(1)}</div>
+                    <div class="parameter-score">${Math.round(value)}/10</div>
+                `;
+                parametersGrid.appendChild(card);
+            });
+
+            // Display AI insights
+            if (data.aiInsights) {
+                const aiInsights = document.getElementById('aiInsights');
+                aiInsights.innerHTML = `
+                    <h3>🤖 AI Insights</h3>
+                    <p>${data.aiInsights}</p>
+                `;
+            }
+
+            // Display word suggestions
+            if (data.wordSuggestions && data.wordSuggestions.length > 0) {
+                displayWordSuggestions(data.wordSuggestions);
+            }
+        }
+
+        // Display word suggestions
+        function displayWordSuggestions(suggestions) {
+            const container = document.getElementById('wordSuggestions');
+            container.innerHTML = '<h3>💡 Word Suggestions</h3>';
+
+            suggestions.forEach(suggestion => {
+                const item = document.createElement('div');
+                item.className = 'suggestion-item';
+                item.innerHTML = `
+                    <div class="suggestion-header">
+                        <span class="suggestion-category">${suggestion.category}</span>
+                        <span class="suggestion-impact">${suggestion.impact}</span>
+                    </div>
+                    <div class="suggestion-content">
+                        <span class="original-word">"${suggestion.original}"</span> → 
+                        <span class="suggested-words">"${suggestion.suggestions.join('", "')}"</span>
+                    </div>
+                    <div class="suggestion-reason">${suggestion.reason}</div>
+                    <div class="suggestion-actions">
+                        <button class="btn btn-small" onclick="applySuggestion('${suggestion.original}', '${suggestion.suggestions[0]}')">
+                            Apply First
+                        </button>
+                        <button class="btn btn-small btn-secondary" onclick="showAllSuggestions('${suggestion.original}')">
+                            View All
+                        </button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Apply word suggestion
+        function applySuggestion(original, replacement) {
+            const textarea = document.getElementById('copyText');
+            const text = textarea.value;
+            const newText = text.replace(new RegExp(original, 'gi'), replacement);
+            textarea.value = newText;
+            
+            // Update word count
+            const words = newText.trim().split(/\s+/).filter(word => word.length > 0);
+            document.getElementById('wordCount').textContent = `${words.length} words`;
+        }
+
+        // Humanize copy
+        async function humanizeCopy() {
+            const copyText = document.getElementById('copyText').value.trim();
+            const copyType = document.getElementById('copyType').value;
+
+            if (!copyText) {
+                alert('Please enter some copy to humanize');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                const response = await fetch('/api/humanize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        copyText, 
+                        copyType, 
+                        tone: selectedTone,
+                        useModel: 'openai' // You can add model selection UI
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayHumanizedVersion(data);
+                } else {
+                    alert('Humanization failed: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error humanizing copy: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Display humanized version
+        function displayHumanizedVersion(data) {
+            const humanizeSection = document.getElementById('humanizeSection');
+            const humanizedText = document.getElementById('humanizedText');
+            const humanizeImprovements = document.getElementById('humanizeImprovements');
+
+            humanizedText.innerHTML = `
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3>✨ Humanized Copy</h3>
+                    <p style="line-height: 1.6; margin-top: 10px;">${data.humanizedText}</p>
+                </div>
+            `;
+
+            if (data.improvements && data.improvements.length > 0) {
+                humanizeImprovements.innerHTML = `
+                    <h3>🔧 Improvements Made</h3>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        ${data.improvements.map(improvement => `<li>${improvement}</li>`).join('')}
+                    </ul>
+                `;
+            }
+
+            humanizeSection.style.display = 'block';
+        }
+
+        // Clear all
+        function clearAll() {
+            document.getElementById('copyText').value = '';
+            document.getElementById('wordCount').textContent = '0 words';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('humanizeSection').style.display = 'none';
+            currentAnalysis = null;
+        }
+
+        // Show/hide loading
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default tone
+            document.querySelector('.humanize-option').classList.add('selected');
+        });
+    </script>
+</body>
+</html> 

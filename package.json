@@ -2,7 +2,22 @@
   "name": "lekhika-project",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "start": "vercel dev"
+  },
   "dependencies": {
-    "@vercel/kv": "^1.0.1"
+    "@vercel/kv": "^1.0.1",
+    "openai": "^4.20.1",
+    "@anthropic-ai/sdk": "^0.9.1",
+    "@google/generative-ai": "^0.6.0",
+    "compromise": "^14.10.0",
+    "sentiment": "^5.0.2",
+    "readability-score": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
   }
-}
+} 
