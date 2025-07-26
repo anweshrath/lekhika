@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LekhIkA Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,27 +12,87 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1a1a1a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #666666;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #ff6b35;
+            --accent-success: #00ff88;
+            --accent-warning: #ffaa00;
+            --accent-error: #ff4757;
+            --border-primary: rgba(255, 255, 255, 0.1);
+            --border-secondary: rgba(255, 255, 255, 0.05);
+            --shadow-primary: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-secondary: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --gradient-primary: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            --gradient-secondary: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            --gradient-success: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 255, 136, 0.05) 0%, transparent 50%);
+            animation: bgFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-10px, -10px) rotate(1deg); }
+            66% { transform: translate(10px, -5px) rotate(-1deg); }
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-primary);
+            border-radius: 24px;
+            color: var(--text-primary);
+            padding: 40px;
             text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient-primary);
         }
 
         .header h1 {
@@ -304,9 +365,128 @@
         .hidden {
             display: none !important;
         }
+
+        /* Info Grid Styles */
+        .info-grid {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-secondary);
+            border-radius: 12px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .info-value {
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+
+        /* Enhanced Button Styles */
+        .btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-success {
+            background: var(--gradient-success);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Enhanced Form Styles */
+        .form-group input {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-primary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+            background: var(--bg-secondary);
+        }
+
+        /* Section Styles */
+        .section {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section:hover {
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-secondary);
+        }
+
+        .section h2 {
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body>
+    <div class="animated-bg"></div>
     <!-- Login Overlay -->
     <div id="loginOverlay" class="login-overlay">
         <div class="login-modal">
@@ -343,6 +523,7 @@
                 <div class="tab" onclick="showTab('scoring')">Scoring Weights</div>
                 <div class="tab" onclick="showTab('analytics')">Analytics</div>
                 <div class="tab" onclick="showTab('system')">System Status</div>
+            <div class="tab" onclick="showTab('security')">Security</div>
             </div>
 
             <!-- AI Configuration Tab -->
@@ -732,6 +913,40 @@
                 </div>
             </div>
 
+            <!-- Security Tab -->
+            <div id="security" class="tab-content">
+                <div class="section">
+                    <h2>🔐 Security Settings</h2>
+                    
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" placeholder="Enter current password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="changePassword()">🔑 Change Password</button>
+                    
+                    <div class="admin-info" style="margin-top: 30px;">
+                        <h3>👤 Admin Information</h3>
+                        <div id="adminInfo">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <p>Loading admin info...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="statusMessage"></div>
         </div>
     </div>
@@ -871,6 +1086,15 @@
             
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
+
+            // Load data for specific tabs
+            if (tabName === 'analytics') {
+                loadAnalytics();
+            } else if (tabName === 'system') {
+                checkSystemStatus();
+            } else if (tabName === 'security') {
+                loadAdminInfo();
+            }
         }
 
         // Slider value display
@@ -1121,6 +1345,95 @@
                     }
                 });
                 showStatus('Scoring weights reset to defaults', 'info');
+            }
+        }
+
+        async function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showStatus('Please fill in all password fields', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showStatus('New passwords do not match', 'error');
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                showStatus('New password must be at least 8 characters long', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-admin-session': sessionToken
+                    },
+                    body: JSON.stringify({ 
+                        action: 'changePassword', 
+                        sessionToken,
+                        newPassword
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('Password changed successfully!', 'success');
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                } else {
+                    showStatus(data.error || 'Failed to change password', 'error');
+                }
+            } catch (error) {
+                showStatus('Error changing password', 'error');
+            }
+        }
+
+        async function loadAdminInfo() {
+            try {
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-admin-session': sessionToken
+                    },
+                    body: JSON.stringify({ 
+                        action: 'getAdminInfo', 
+                        sessionToken
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const adminInfo = document.getElementById('adminInfo');
+                    adminInfo.innerHTML = `
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Username:</span>
+                                <span class="info-value">${data.username}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Session Created:</span>
+                                <span class="info-value">${new Date(data.sessionCreated).toLocaleString()}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Session Expires:</span>
+                                <span class="info-value">${new Date(data.expiresAt).toLocaleString()}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to load admin info:', error);
             }
         }
 
