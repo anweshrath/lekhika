@@ -4,10 +4,10 @@ import crypto from 'crypto';
 
 // Get admin credentials from environment variables
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '';
+const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'AnweshRath123!';
 
-// If no password hash is set, use a default one (change this!)
-const DEFAULT_PASSWORD_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // admin
+// Hash the secret key for password verification
+const ADMIN_PASSWORD_HASH = crypto.createHash('sha256').update(ADMIN_SECRET_KEY).digest('hex');
 
 // Session management
 const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
@@ -35,11 +35,8 @@ export async function POST(request: NextRequest) {
 }
 
 async function handleLogin(username: string, password: string) {
-  // Use default password hash if none is set
-  const passwordHash = ADMIN_PASSWORD_HASH || DEFAULT_PASSWORD_HASH;
-
   // Verify credentials
-  if (username !== ADMIN_USERNAME || !verifyPassword(password, passwordHash)) {
+  if (username !== ADMIN_USERNAME || !verifyPassword(password, ADMIN_PASSWORD_HASH)) {
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
   }
 
