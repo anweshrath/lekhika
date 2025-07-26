@@ -8,6 +8,7 @@
     "start": "vercel dev"
   },
   "dependencies": {
+    "next": "^14.0.0",
     "@vercel/kv": "^1.0.1",
     "openai": "^4.20.1",
     "@anthropic-ai/sdk": "^0.9.1",
