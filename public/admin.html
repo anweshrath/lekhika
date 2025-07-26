@@ -740,6 +740,22 @@
             color: var(--text-secondary);
             margin: 5px 0;
         }
+
+        .console-window {
+            background: var(--bg-tertiary);
+            color: var(--accent-warning);
+            border: 1px solid var(--border-secondary);
+            border-radius: 8px;
+            margin-top: 18px;
+            padding: 12px 16px;
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            font-size: 13px;
+            min-height: 32px;
+            max-height: 120px;
+            overflow-y: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            word-break: break-all;
+        }
     </style>
 </head>
 <body>
@@ -758,6 +774,7 @@
             </div>
             <button class="btn" onclick="login()">Login</button>
             <div id="loginError" class="status error hidden"></div>
+            <div id="loginConsole" class="console-window"></div>
         </div>
     </div>
 
@@ -1259,11 +1276,14 @@
                     sessionStorage.setItem('adminSessionExpiresAt', sessionExpiresAt.toString());
                     
                     showAdminPanel();
+                    document.getElementById('loginConsole').textContent = '';
                 } else {
                     showLoginError(data.error || 'Login failed');
+                    document.getElementById('loginConsole').textContent = '[API ERROR] ' + (data.error || 'Login failed');
                 }
             } catch (error) {
                 showLoginError('Connection error. Please try again.');
+                document.getElementById('loginConsole').textContent = '[CONNECTION ERROR] ' + (error && error.message ? error.message : error);
                 console.log('Login error:', error);
             }
         }
