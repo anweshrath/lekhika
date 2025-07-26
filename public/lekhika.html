@@ -349,6 +349,15 @@
             opacity: 0.9;
         }
 
+        .error-message {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid rgba(255, 107, 107, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ff6b6b;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -472,7 +481,7 @@
             event.target.closest('.humanize-option').classList.add('selected');
         }
 
-        // Analyze copy
+        // Analyze copy with proper error handling
         async function analyzeCopy() {
             const copyText = document.getElementById('copyText').value.trim();
             const copyType = document.getElementById('copyType').value;
@@ -491,16 +500,24 @@
                     body: JSON.stringify({ copyText, copyType })
                 });
 
+                // Handle non-JSON responses
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error(`Server error: ${text.substring(0, 200)}`);
+                }
+
                 const data = await response.json();
 
                 if (data.success) {
                     currentAnalysis = data;
                     displayResults(data);
                 } else {
-                    alert('Analysis failed: ' + data.error);
+                    throw new Error(data.error || 'Analysis failed');
                 }
             } catch (error) {
-                alert('Error analyzing copy: ' + error.message);
+                console.error('Analysis error:', error);
+                showError(`Analysis failed: ${error.message}`);
             } finally {
                 showLoading(false);
             }
@@ -595,7 +612,7 @@
             document.getElementById('wordCount').textContent = `${words.length} words`;
         }
 
-        // Humanize copy
+        // Humanize copy with proper error handling
         async function humanizeCopy() {
             const copyText = document.getElementById('copyText').value.trim();
             const copyType = document.getElementById('copyType').value;
@@ -615,19 +632,27 @@
                         copyText, 
                         copyType, 
                         tone: selectedTone,
-                        useModel: 'openai' // You can add model selection UI
+                        useModel: 'openai'
                     })
                 });
+
+                // Handle non-JSON responses
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error(`Server error: ${text.substring(0, 200)}`);
+                }
 
                 const data = await response.json();
 
                 if (data.success) {
                     displayHumanizedVersion(data);
                 } else {
-                    alert('Humanization failed: ' + data.error);
+                    throw new Error(data.error || 'Humanization failed');
                 }
             } catch (error) {
-                alert('Error humanizing copy: ' + error.message);
+                console.error('Humanization error:', error);
+                showError(`Humanization failed: ${error.message}`);
             } finally {
                 showLoading(false);
             }
@@ -656,6 +681,19 @@
             }
 
             humanizeSection.style.display = 'block';
+        }
+
+        // Show error message
+        function showError(message) {
+            const results = document.getElementById('results');
+            results.style.display = 'block';
+            results.innerHTML = `
+                <div class="error-message">
+                    <h3>❌ Error</h3>
+                    <p>${message}</p>
+                    <p>Please check your API keys in the admin panel or try again later.</p>
+                </div>
+            `;
         }
 
         // Clear all

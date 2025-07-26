@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from '@vercel/kv';
+import { verifyAdminAccess } from './auth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Verify admin access
+  const isAdmin = await verifyAdminAccess(request);
+  if (!isAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   try {
     const aiConfig = await kv.get('ai_config') || {
-      openaiKey: process.env.OPENAI_API_KEY || '',
-      anthropicKey: process.env.ANTHROPIC_API_KEY || '',
-      geminiKey: process.env.GEMINI_API_KEY || '',
+      openaiKey: '',
+      anthropicKey: '',
+      geminiKey: '',
       model: 'gpt-4',
       geminiModel: 'gemini-pro',
       temperature: 0.7,
@@ -57,6 +63,12 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  // Verify admin access
+  const isAdmin = await verifyAdminAccess(request);
+  if (!isAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const { ai, scoring_weights } = await request.json();
 

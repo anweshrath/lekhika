@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from '@vercel/kv';
+import { verifyAdminAccess } from './auth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Verify admin access
+  const isAdmin = await verifyAdminAccess(request);
+  if (!isAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   try {
     // Get analytics data from KV store
     const totalAnalyses = await kv.get('analytics:total_analyses') || 0;

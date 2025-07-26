@@ -18,9 +18,9 @@ export async function POST(request: NextRequest) {
 
     // Get AI configuration
     const aiConfig = await kv.get('ai_config') as any || {
-      openaiKey: process.env.OPENAI_API_KEY || '',
-      anthropicKey: process.env.ANTHROPIC_API_KEY || '',
-      geminiKey: process.env.GEMINI_API_KEY || '',
+      openaiKey: '',
+      anthropicKey: '',
+      geminiKey: '',
       model: 'gpt-4',
       geminiModel: 'gemini-pro',
       temperature: 0.7,
